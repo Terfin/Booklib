@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="BookLibrary.SearchTypeWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="280" d:DesignWidth="576" Width="954" Height="547">
+    <Grid Name="stypeGrid">
+        <TextBlock Height="25" HorizontalAlignment="Left" Margin="12,23,0,0" Name="serialNumBlock" Text="ISBN/ISSN" VerticalAlignment="Top" Width="94" FontSize="16" />
+        <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="474,24,0,0" Name="dateFromBlock" Text="Publish Date From" VerticalAlignment="Top" Width="132" />
+        <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="12,98,0,0" Name="authorBlock" Text="Author" VerticalAlignment="Top" Width="94" />
+        <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="12,173,0,0" Name="itemTypeBlock" Text="Item Type" VerticalAlignment="Top" Width="94" />
+        <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="12,323,0,0" Name="itemCategoryBlock" Text="Category" VerticalAlignment="Top" Width="94" />
+        <TextBox Height="25" HorizontalAlignment="Left" Margin="112,23,0,0" Name="serialNumInp" VerticalAlignment="Top" Width="161" Text="{Binding SerialNumber, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" MaxLength="9" />
+        <TextBox Height="25" HorizontalAlignment="Left" Margin="112,98,0,0" Name="authorInp" VerticalAlignment="Top" Width="161" Text="{Binding Author, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+        <DatePicker Height="25" HorizontalAlignment="Right" Margin="0,23,195,0" Name="dateFromPicker" VerticalAlignment="Top" Width="139" DisplayDate="12/12/2012" Text="{Binding DateFrom, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock Height="25" HorizontalAlignment="Left" Margin="586,100,0,0" Name="dateToBlock" Text="To" VerticalAlignment="Top" Width="20" FontSize="16" />
+        <DatePicker Height="25" HorizontalAlignment="Right" Margin="0,100,195,0" Name="dateToPicker" VerticalAlignment="Top" Width="139" DisplayDate="12/12/2012" Text="{Binding DateTo, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+        <CheckBox Content="Journal" Height="25" HorizontalAlignment="Left" Margin="112,173,0,0" Name="itemTypeJournal" VerticalAlignment="Top" FontSize="16" Checked="type_Checked" Unchecked="type_Unchecked" />
+        <CheckBox Content="Book" FontSize="16" Height="25" HorizontalAlignment="Left" Margin="223,173,0,0" Name="itemTypeBook" VerticalAlignment="Top" Checked="type_Checked" Unchecked="type_Unchecked" />
+        <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="12,248,0,0" Name="itemSubtypeBlock" Text="Subtype" VerticalAlignment="Top" Width="94" />
+        <ListBox Height="40" HorizontalAlignment="Left" Margin="112,248,0,0" Name="itemSubTypeList" VerticalAlignment="Top" Width="830" SelectionMode="Multiple" ItemsSource="{Binding}" BorderThickness="0">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding}" Margin="3" IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" FontSize="14" Checked="subType_Checked" Unchecked="subType_Unchecked" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ListBox>
+        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="112,323,0,0" Name="itemCategoriesList1" SelectionMode="Multiple" VerticalAlignment="Top" Width="161">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding}" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Margin="3" FontSize="14" Checked="category_Checked" Unchecked="category_Unchecked" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="279,323,0,0" Name="itemCategoriesList2" SelectionMode="Multiple" VerticalAlignment="Top" Width="161">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding}" FontSize="14" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Margin="3" Checked="category_Checked" Unchecked="category_Unchecked" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="446,323,0,0" Name="itemCategoriesList3" SelectionMode="Multiple" VerticalAlignment="Top" Width="161">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding}" FontSize="14" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Margin="3" Checked="category_Checked" Unchecked="category_Unchecked" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="613,323,0,0" Name="itemCategoriesList4" SelectionMode="Multiple" VerticalAlignment="Top" Width="161">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding}" FontSize="14" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Margin="3" Checked="category_Checked" Unchecked="category_Unchecked" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="288,23,0,0" Name="itemEditionBlock" Text="Edition" VerticalAlignment="Top" Width="55" />
+        <TextBox Height="25" HorizontalAlignment="Left" Margin="349,23,0,0" Name="itemEditionInp" Text="{Binding Edition, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="33" MaxLength="2" />
+    </Grid>
+</UserControl>
