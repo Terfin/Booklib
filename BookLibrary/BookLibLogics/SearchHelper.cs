@@ -5,12 +5,13 @@ using System.Text;
 using BookLibServices;
 using BookLibDAL;
 using System.Globalization;
+using System.Reflection;
 
 namespace BookLibLogics
 {
     public static class SearchHelper
     {
-        public delegate List<AbstractItem> SearchOptions(string param, List<AbstractItem> items);
+        public delegate List<AbstractItem> SearchOptions(string param, List<AbstractItem> items);        
         private static ItemCollection collection = ItemCollection.Instance;
 
         public static List<AbstractItem> searchByName(string name, List<AbstractItem> origin = null)
@@ -61,42 +62,19 @@ namespace BookLibLogics
             }
         }
 
-        public static List<AbstractItem> searchByType(List<AbstractItem> origin, Dictionary<string, bool> types)
+        public static List<AbstractItem> searchByType(string type, List<AbstractItem> origin = null)
         {
-            List<AbstractItem> postFiltered = new List<AbstractItem>();
             origin = origin == null ? collection.Items : origin;
-            foreach (string type in types.Keys)
-            {
-                string fixedType = type.Replace(" ", string.Empty);
-                postFiltered.AddRange(origin.FindAll(x =>
-                {
-                    if (types[type])
-                    {
-                        Type typa = Type.GetType(string.Format("BookLibServices.{0}, BookLibServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", fixedType));
-                        Type xtype = x.GetType();
-                        return xtype.IsSubclassOf(typa) || typa == xtype;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-
-                ));
-            }
-            return postFiltered;
+            string fixedType = type.Replace(" ", string.Empty);
+            Type itemType = Type.GetType(string.Format("BookLibServices.{0}, BookLibServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", fixedType));
+            return origin.FindAll(x => x.GetType() == itemType);
         }
 
-        public static List<AbstractItem> searchByCategory(List<AbstractItem> origin, Dictionary<string, bool> categories)
+        public static List<AbstractItem> searchByCategory(string categoryName, List<AbstractItem> origin = null)
         {
-            List<AbstractItem> postFiltered = new List<AbstractItem>();
             origin = origin == null ? collection.Items : origin;
-            foreach (string category in categories.Keys)
-            {
-                if (categories[category])
-                {
-                    string fixedCategory = category.Replace("&", string.Empty);
-                    fixedCategory = category.Replace(" ", string.Empty);
+            string fixedCategory = categoryName.Replace("&", string.Empty);
+            fixedCategory = categoryName.Replace(" ", string.Empty);
                     postFiltered.AddRange(origin.FindAll(x =>
                     {
                         if (x.GetType() == typeof(ChildrenBook))
