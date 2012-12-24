@@ -10,8 +10,7 @@ using System.Reflection;
 namespace BookLibLogics
 {
     public static class SearchHelper
-    {
-        public delegate List<AbstractItem> SearchOptions(string param, List<AbstractItem> items);        
+    {       
         private static ItemCollection collection = ItemCollection.Instance;
 
         public static List<AbstractItem> searchByName(string name, List<AbstractItem> origin = null)
@@ -67,49 +66,46 @@ namespace BookLibLogics
             origin = origin == null ? collection.Items : origin;
             string fixedType = type.Replace(" ", string.Empty);
             Type itemType = Type.GetType(string.Format("BookLibServices.{0}, BookLibServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", fixedType));
-            return origin.FindAll(x => x.GetType() == itemType);
+            return origin.FindAll(x => x.GetType() == itemType || x.GetType().IsSubclassOf(itemType));
         }
 
         public static List<AbstractItem> searchByCategory(string categoryName, List<AbstractItem> origin = null)
         {
-            origin = origin == null ? collection.Items : origin;
+            origin = origin == null ? collection : origin;
             string fixedCategory = categoryName.Replace("&", string.Empty);
             fixedCategory = categoryName.Replace(" ", string.Empty);
-                    postFiltered.AddRange(origin.FindAll(x =>
-                    {
-                        if (x.GetType() == typeof(ChildrenBook))
-                        {
-                            ChildrenBook cb = x as ChildrenBook;
-                            return cb.Category.ToString() == fixedCategory;
-                        }
-                        else if (x.GetType() == typeof(RegularBook))
-                        {
-                            RegularBook rb = x as RegularBook;
-                            return rb.Category.ToString() == fixedCategory;
-                        }
-                        else if (x.GetType() == typeof(StudyBook))
-                        {
-                            StudyBook sb = x as StudyBook;
-                            return sb.Category.ToString() == fixedCategory;
-                        }
-                        else if (x.GetType() == typeof(RegularJournal))
-                        {
-                            RegularJournal rj = x as RegularJournal;
-                            return rj.Category.ToString() == fixedCategory;
-                        }
-                        else if (x.GetType() == typeof(ScienceJournal))
-                        {
-                            ScienceJournal sj = x as ScienceJournal;
-                            return sj.Category.ToString() == fixedCategory;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }));
+            return origin.FindAll(x =>
+            {
+                if (x.GetType() == typeof(ChildrenBook))
+                {
+                    ChildrenBook cb = x as ChildrenBook;
+                    return cb.Category.ToString() == fixedCategory;
                 }
-            }
-            return postFiltered;
+                else if (x.GetType() == typeof(RegularBook))
+                {
+                    RegularBook rb = x as RegularBook;
+                    return rb.Category.ToString() == fixedCategory;
+                }
+                else if (x.GetType() == typeof(StudyBook))
+                {
+                    StudyBook sb = x as StudyBook;
+                    return sb.Category.ToString() == fixedCategory;
+                }
+                else if (x.GetType() == typeof(RegularJournal))
+                {
+                    RegularJournal rj = x as RegularJournal;
+                    return rj.Category.ToString() == fixedCategory;
+                }
+                else if (x.GetType() == typeof(ScienceJournal))
+                {
+                    ScienceJournal sj = x as ScienceJournal;
+                    return sj.Category.ToString() == fixedCategory;
+                }
+                else
+                {
+                    return false;
+                }
+            });
         }
 
         public static List<AbstractItem> searchByDate(string dateRange, List<AbstractItem> origin = null)
@@ -148,33 +144,6 @@ namespace BookLibLogics
                 }
             }
             return results;
-            //if (dateStart != DateTime.MinValue || dateEnd != DateTime.MinValue)
-            //{
-            //    List<AbstractItem> postFiltered = new List<AbstractItem>();
-            //    if (dateStart != DateTime.MinValue)
-            //    {
-            //        postFiltered.AddRange(origin.FindAll(x =>
-            //            {
-            //                return x.PrintDate >= dateStart;
-            //            }));
-            //    }
-            //    if (dateEnd != DateTime.MinValue)
-            //    {
-            //        if (postFiltered.Count > 0)
-            //        {
-            //            origin = postFiltered;
-            //        }
-            //        postFiltered = origin.FindAll(x =>
-            //            {
-            //                return x.PrintDate <= dateEnd;
-            //            });
-            //    }
-            //    return postFiltered;
-            //}
-            //else
-            //{
-            //    return origin;
-            //}
         }
     }
 }

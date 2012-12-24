@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="280" d:DesignWidth="576" Width="954" Height="547">
     <Grid Name="stypeGrid">
-        <TextBlock Height="25" HorizontalAlignment="Left" Margin="12,23,0,0" Name="serialNumBlock" Text="ISBN/ISSN" VerticalAlignment="Top" Width="94" FontSize="16" />
+        <TextBlock Height="25" HorizontalAlignment="Left" Margin="12,23,0,0" Name="serialNumBlock" Text="ISBN" VerticalAlignment="Top" Width="94" FontSize="16" />
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="474,24,0,0" Name="dateFromBlock" Text="Publish Date From" VerticalAlignment="Top" Width="132" />
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="12,98,0,0" Name="authorBlock" Text="Author" VerticalAlignment="Top" Width="94" />
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="12,173,0,0" Name="itemTypeBlock" Text="Item Type" VerticalAlignment="Top" Width="94" />

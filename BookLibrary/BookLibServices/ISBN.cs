@@ -74,7 +74,11 @@ namespace BookLibServices
         private string GenerateISBNFromString(string isbn)
         {
             string isbnString = "";
-            for (int i = isbn.Length; i >= 1; i--)
+            while (isbn.Contains('-'))
+            {
+                isbn = isbn.Replace("-", string.Empty);
+            }
+            for (int i = 1; i <= isbn.Length; i++)
             {
                 isbnString += isbn[i - 1];
                 if (i % 3 == 0 && i < 9)
@@ -85,9 +89,9 @@ namespace BookLibServices
             return isbnString;
         }
 
-        public static bool operator ==(ISBN self, ISBN other)
+        public override bool Equals(object obj)
         {
-            return self.Number.Contains(other.Number);
+            return ((ISBN)obj).Number == this.Number;
         }
 
         public string Number { get; private set; }

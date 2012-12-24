@@ -23,23 +23,18 @@ namespace BookLibrary
     {
         SearchTypeWindow stype;
         SearchResultsWindow sresults;
-        ISNotify inotify;
         DynamicData dyndata;
 
-        public delegate List<AbstractItem> SearchFunction<T>(T parameter, List<AbstractItem> items);
 
         public SearchWindow()
         {
             InitializeComponent();
             stype = new SearchTypeWindow();
-            inotify = new ISNotify(this);
             dyndata = DynamicData.Instance;
-            dyndata.SearchWindowNotifier = inotify;
             sresults = new SearchResultsWindow();
             expanderContent.Content = sresults;
             sresults.EditActionInvoked += new EventHandler(sresults_EditActionInvoked);
-            List<SearchFunction<string>> funcset1 = new List<SearchFunction<string>>();
-            List<SearchFunction<DateTime>> funcset2 = new List<SearchFunction<DateTime>>();
+            dyndata.onSearchComplete += searchComplete;
         }
 
         void sresults_EditActionInvoked(object sender, EventArgs e)
@@ -59,29 +54,55 @@ namespace BookLibrary
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            List<AbstractItem> results = null;
-            
+            List<DynamicData.SearchFunction> searchFuncSet = new List<DynamicData.SearchFunction>();
+            List<List<string>> listOfValuesLists = new List<List<string>>();
+            if (itemNameInp.Text.Length > 0)
+            {
+                listOfValuesLists.Add(new List<string>() { itemNameInp.Text });
+                searchFuncSet.Add(SearchHelper.searchByName);
+            }
             if (optionsExpander.IsExpanded)
             {
-                foreach (ValidSearchParams param in stype.activeFields.Keys)
+                if (stype.serialNumInp.Text.Length > 0)
                 {
-                    
+                    listOfValuesLists.Add(new List<string>() { stype.serialNumInp.Text });
+                    searchFuncSet.Add(SearchHelper.searchByISBN);
                 }
+                if (stype.itemEditionInp.Text.Length > 0)
+                {
+                    listOfValuesLists.Add(new List<string>() { stype.itemEditionInp.Text });
+                    searchFuncSet.Add(SearchHelper.searchByEdition);
+                }
+                if (stype.serialNumInp.Text.Length > 0)
+                {
+                    listOfValuesLists.Add(new List<string>() { stype.authorInp.Text });
+                    searchFuncSet.Add(SearchHelper.searchByAuthor);
+                }
+                Dictionary<string, bool> checkedTypes = stype.CheckedTypes.Where(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                Dictionary<string, bool> checkedSubtypes = stype.CheckedSubtypes.Where(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                if (checkedTypes.Keys.Count > 0)
+                {
+                    listOfValuesLists.Add(checkedTypes.Keys.ToList());
+                    searchFuncSet.Add(SearchHelper.searchByType);
+                }
+                if (checkedSubtypes.Keys.Count > 0)
+                {
+                    listOfValuesLists.Add(checkedSubtypes.Keys.ToList());
+                    searchFuncSet.Add(SearchHelper.searchByType);
+                }
+                Dictionary<string, bool> checkedCategories = stype.CheckedCategories.Where(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                if (checkedCategories.Keys.Count > 0)
+                {
+                    listOfValuesLists.Add(checkedCategories.Keys.ToList());
+                    searchFuncSet.Add(SearchHelper.searchByCategory);
+                }
+                dyndata.Search(listOfValuesLists, searchFuncSet);
             }
-            dyndata.Search(parameters);
         }
-    }
-    
-    public class ISNotify : ISearchStatusNotifier
-    {
-        private SearchWindow activeWindow;
-        public ISNotify(SearchWindow window)
-        {
-            activeWindow = window;
-        }
+
         public void searchComplete(List<AbstractItem> items)
         {
-            activeWindow.optionsExpander.IsExpanded = false;
+            optionsExpander.IsExpanded = false;
         }
     }
 }

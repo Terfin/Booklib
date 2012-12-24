@@ -33,8 +33,6 @@ namespace BookLibrary
         private ObservableCollection<string> categories3 = new ObservableCollection<string>();
         private ObservableCollection<string> categories4 = new ObservableCollection<string>();
 
-        public Dictionary<ValidSearchParams, bool> activeFields = new Dictionary<ValidSearchParams, bool>();
-
         private string _isbn;
         private string _author;
         private string _edition;
@@ -190,85 +188,14 @@ namespace BookLibrary
             }
         }
 
-        public string ISBN 
-        {
-            get
-            {
-                return _isbn;
-            }
-            set
-            {
-                _isbn = value;
-                if (value.Length > 0)
-                {
-                    activeFields[ValidSearchParams.ISBN] = true;
-                }
-                else
-                {
-                    activeFields[ValidSearchParams.ISBN] = false;
-                }
-            }
-        }
+        public string ISBN { get; set; }
+
+        public string Author { get; set; }
+
+        public string Edition { get; set; }
+
+        public string DateFrom { get; set; }
         
-        public string Author 
-        {
-            get
-            {
-                return _author;
-            }
-            set
-            {
-                _author = value;
-                if (value.Length > 0)
-	            {
-                    activeFields[ValidSearchParams.Author] = true;
-	            }
-                else
-                {
-                    activeFields[ValidSearchParams.Author] = false;
-                }
-            }
-        }
-
-        public string Edition
-        {
-            get
-            {
-                return _edition;
-            }
-            set
-            {
-                _edition = value;
-                if (value.Length > 0)
-                {
-                    activeFields[ValidSearchParams.EditionNumber] = true;
-                }
-                else
-                {
-                    activeFields[ValidSearchParams.EditionNumber] = false;
-                }
-            }
-        }
-
-        public string DateFrom
-        {
-            get
-            {
-                return _dateFrom;
-            }
-            set
-            {
-                _dateFrom = value;
-                if (value.Length > 0)
-                {
-                    activeFields[ValidSearchParams.DateFrom] = true;
-                }
-                else
-                {
-                    activeFields[ValidSearchParams.DateFrom] = false;
-                }
-            }
-        }
         public string DateTo { get; set; }
         
 
