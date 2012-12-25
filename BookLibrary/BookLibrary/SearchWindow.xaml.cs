@@ -33,7 +33,7 @@ namespace BookLibrary
             dyndata = DynamicData.Instance;
             sresults = new SearchResultsWindow();
             expanderContent.Content = sresults;
-            sresults.EditActionInvoked += new EventHandler(sresults_EditActionInvoked);
+            sresults.EditActionInvoked += sresults_EditActionInvoked;
             dyndata.onSearchComplete += searchComplete;
         }
 

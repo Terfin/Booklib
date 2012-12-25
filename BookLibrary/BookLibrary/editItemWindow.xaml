@@ -2,14 +2,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:diagnostics="clr-namespace:System.Diagnostics;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Width="954" Height="547">
     <Grid>
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="12,108,0,0" Name="serialNumBlock" Text="ISBN/ISSN" VerticalAlignment="Top" Width="94" />
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="474,109,0,0" Name="dateBlock" Text="Publish Date" VerticalAlignment="Top" Width="103" />
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="12,183,0,0" Name="authorBlock" Text="Author" VerticalAlignment="Top" Width="94" />
-        <TextBox Height="25" HorizontalAlignment="Left" Margin="112,108,0,0" MaxLength="9" Name="serialNumInp" Text="{Binding Serial, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="161" FontSize="16" />
+        <TextBox Height="25" HorizontalAlignment="Left" Margin="112,108,0,0" MaxLength="9" Name="serialNumInp" Text="{Binding ISBN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="161" FontSize="16" />
         <TextBox Height="25" HorizontalAlignment="Left" Margin="112,183,0,0" Name="authorInp" Text="{Binding Author, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="161" FontSize="16" />
         <DatePicker Height="25" HorizontalAlignment="Right" Margin="0,108,245,0" Name="dateFromPicker" SelectedDate="{Binding Date, StringFormat='dd/MM/yyyy', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="139" FontSize="16" DisplayDate="12/17/2012" />
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="288,108,0,0" Name="itemEditionBlock" Text="Edition" VerticalAlignment="Top" Width="55" />
@@ -19,13 +20,13 @@
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="12,258,0,0" Name="typeBlock" Text="Type" VerticalAlignment="Top" Width="52" />
         <ComboBox Height="25" HorizontalAlignment="Left" Margin="112,258,0,0" Name="typeCombo" VerticalAlignment="Top" Width="161" FontSize="15" SelectedItem="{Binding SelectedType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="316,258,0,0" Name="subTypeBlock" Text="Subtype" VerticalAlignment="Top" Width="66" />
-        <ComboBox Height="25" HorizontalAlignment="Left" Margin="416,258,0,0" Name="subTypeCombo" VerticalAlignment="Top" Width="161" FontSize="15" ItemsSource="{Binding Subtypes}" SelectedItem="{Binding SelectedSubtype, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <ComboBox Height="25" HorizontalAlignment="Left" Margin="416,258,0,0" Name="subTypeCombo" VerticalAlignment="Top" Width="161" FontSize="15" ItemsSource="{Binding Path=Subtypes}" SelectedItem="{Binding SelectedSubtype, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="620,258,0,0" Name="categoryBlock" VerticalAlignment="Top" Width="66" Text="Category" />
         <ComboBox Height="25" HorizontalAlignment="Right" Margin="0,258,73,0" Name="categoryCombo" VerticalAlignment="Top" Width="161" FontSize="15" ItemsSource="{Binding CategoriesList}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <Button Content="Save" Height="43" HorizontalAlignment="Right" Margin="0,324,270,0" Name="saveButton" VerticalAlignment="Top" Width="139" FontSize="16" Visibility="Hidden" Click="saveButton_Click" />
         <Button Content="Cancel" Height="43" HorizontalAlignment="Left" Margin="270,324,0,0" Name="cancelButton" VerticalAlignment="Top" Width="139" FontSize="16" />
         <Button Content="Add" FontSize="16" Height="43" HorizontalAlignment="Right" Margin="0,324,270,0" Name="addButton" VerticalAlignment="Top" Width="139" Visibility="Hidden" />
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="401,34,0,0" Name="locBlock" Text="Location" VerticalAlignment="Top" Width="63" />
-        <TextBox FontSize="16" Height="25" HorizontalAlignment="Left" Margin="474,31,0,0" MaxLength="4" Name="locBox" Text="{Binding Edition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="38" />
+        <TextBox FontSize="16" Height="25" HorizontalAlignment="Left" Margin="474,31,0,0" MaxLength="4" Name="locBox" Text="{Binding Location, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="38" />
     </Grid>
 </UserControl>

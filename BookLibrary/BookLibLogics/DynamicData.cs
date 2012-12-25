@@ -36,7 +36,7 @@ namespace BookLibLogics
 
         public AbstractItem GetItemFromDataRow(DataRow row)
         {
-            string rawSerial = row["ISSN|ISBN"].ToString();
+            string rawSerial = row["ISBN"].ToString();
             string typeString = row["Subtype"].ToString().Replace(" ", string.Empty);
             typeString = string.Format("BookLibServices.{0}, BookLibServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", typeString);
             Type type = Type.GetType(typeString);

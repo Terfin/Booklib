@@ -16,6 +16,8 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using BookLibLogics;
+using Microsoft.CSharp;
+using System.IO;
 
 namespace BookLibrary
 {
@@ -28,10 +30,13 @@ namespace BookLibrary
         private DynamicData data = DynamicData.Instance;
         Dictionary<string, string> parameters;
         AbstractItem editedItem;
+        SearchObject sobj;
         DateTime editedItemPublishDate;
         private string selectedType;
         private string selectedSubtype;
         private string selectedCategory;
+        ObservableCollection<string> _subTypes = new ObservableCollection<string>();
+
         public enum editTypes
         {
             Add, Edit
@@ -46,7 +51,6 @@ namespace BookLibrary
                 {
                     "Book", "Journal"
                 };
-            Subtypes = new ObservableCollection<string>();
             CategoriesList = new ObservableCollection<string>();
             typeCombo.ItemsSource = Types;
             typeCombo.DataContext = this;
@@ -61,7 +65,7 @@ namespace BookLibrary
             {
                 addButton.Visibility = System.Windows.Visibility.Hidden;
                 saveButton.Visibility = System.Windows.Visibility.Visible;
-                SearchObject sobj = getSearchObject(item);
+                sobj = getSearchObject(item);
                 SelectedType = sobj.Type;
                 SelectedSubtype = sobj.Subtype;
                 SelectedCategory = sobj.Category;
@@ -134,6 +138,8 @@ namespace BookLibrary
             parameters["Subtype"] = ((NameAttr)item.GetType().GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
             parameters["Author"] = item.Author;
             parameters["ISBN"] = item.ISBN.Number;
+            parameters["Edition"] = item.Edition.ToString();
+            parameters["Location"] = item.Location;
             return parameters;
         }
 
@@ -150,10 +156,10 @@ namespace BookLibrary
                 {
                     value.ToLower()
                 });
-                Subtypes.Clear();
+                _subTypes.Clear();
                 foreach (string subtype in subtypes)
                 {
-                    Subtypes.Add(subtype);
+                    _subTypes.Add(subtype);
                 }
             }
         }
@@ -166,37 +172,84 @@ namespace BookLibrary
             }
             set
             {
-                CategoriesList.Clear();
-                selectedSubtype = value;
-                List<string> categories = utilities.getCategories(new List<string>()
+                if (value != null)
+                {
+                    CategoriesList.Clear();
+                    selectedSubtype = value;
+                    List<string> categories = utilities.getCategories(new List<string>()
                 {
                     value.ToLower()
                 });
-                foreach (string category in categories)
+                    foreach (string category in categories)
+                    {
+                        CategoriesList.Add(category);
+                    }
+                }
+                else
                 {
-                    CategoriesList.Add(category);
+                    CategoriesList.Clear();
                 }
             }
         }
 
         public string SelectedCategory { get; set; }
         public string Edition { get; private set; }
-        public ObservableCollection<string> Subtypes { get; private set; }
+        public ObservableCollection<string> Subtypes
+        {
+            get { return _subTypes; }
+        }
         public ObservableCollection<string> CategoriesList { get; private set; }
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
+            CSharpCodeProvider provider = new CSharpCodeProvider();
+            
+            AbstractItem item;
+            bool newItem = false;
             if (SelectedSubtype != ((NameAttr)editedItem.GetType().GetCustomAttributes(typeof(NameAttr), false)[0]).Desc)
             {
                 data.RemoveItem(editedItem);
-                if (editedItem.GetType() == typeof(ChildrenBook))
-                {
-                    string refinedcat = selectedCategory.Replace("&", string.Empty);
-                    refinedcat = refinedcat.Replace(" ", string.Empty);
-                    ChildrenBook.Categories childcat = (ChildrenBook.Categories)Enum.Parse(typeof(ChildrenBook.Categories), refinedcat, true);
-                }
+                newItem = true;
+            }
+            if (sobj.Name != editedItem.Name)
+            {
             }
             
+        }
+
+        private AbstractItem createNewItem()
+        {
+            string codeToRun = "";
+            codeToRun += getNewInstanceString(codeToRun);
+        }
+
+
+        private string getNewInstanceString(string codeToRun)
+        {
+            string realTypestr = selectedSubtype.Replace("&", string.Empty);
+            realTypestr = realTypestr.Replace(" ", string.Empty);
+            Type itemType = Type.GetType(string.Format("BookLibServices.{0}, BookLibServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", realTypestr));
+            if (itemType == typeof(RegularBook))
+            {
+                return "new RegularBook(";
+            }
+            else if (itemType == typeof(ChildrenBook))
+            {
+                return "new ChildrenBook(";
+            }
+            else if (itemType == typeof(StudyBook))
+            {
+                return "new StudyBook(";
+            }
+            else if (itemType == typeof(RegularJournal))
+            {
+                return "new RegularJournal(";
+            }
+            else if (itemType == typeof(ScienceJournal))
+            {
+                return "new ScienceJournal(";
+            }
+            return "";
         }
     }
 }

@@ -67,14 +67,17 @@ namespace BookLibrary
             DataRow dr = datarv.Row;
             if (((Button)sender).Name.Contains("edit"))
             {
-                try 
-	            {	        
-                    this.EditActionInvoked(dyn.GetItemFromDataRow(dr), new EventArgs());
-	            }
-	            catch (Exception)
-	            {
-                    System.Windows.Forms.MessageBox.Show("Cannot load edit screen! Please report this bug!");
-	            }
+                //try 
+                //{	        
+                    if (EditActionInvoked != null)
+	                {
+                        EditActionInvoked(dyn.GetItemFromDataRow(dr), new EventArgs());
+	                }
+                //}
+                //catch (Exception)
+                //{
+                //    System.Windows.Forms.MessageBox.Show("Cannot load edit screen! Please report this bug!");
+                //}
                 
                 
             }
@@ -101,29 +104,29 @@ namespace BookLibrary
                     {
                         ChildrenBook book = item as ChildrenBook;
                         generateRowFromItem(book, row);
-                        row["Category"] = book.Category;
+                        row["Category"] = ((NameAttr)typeof(ChildrenBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
                     }
                     if (item.GetType() == typeof(RegularBook))
                     {
                         RegularBook book = item as RegularBook;
                         generateRowFromItem(book, row);
-                        row["Category"] = book.Category;
+                        row["Category"] = ((NameAttr)typeof(RegularBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
                     }
                     if (item.GetType() == typeof(StudyBook))
                     {
                         StudyBook book = item as StudyBook;
                         generateRowFromItem(book, row);
-                        row["Category"] = book.Category;
+                        row["Category"] = ((NameAttr)typeof(StudyBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
                     }
                     if (item.GetType() == typeof(RegularJournal))
                     {
                         RegularJournal journal = item as RegularJournal;
-                        row["Category"] = journal.Category;
+                        row["Category"] = ((NameAttr)typeof(RegularJournal.Categories).GetField(journal.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
                     }
                     if (item.GetType() == typeof(ScienceJournal))
                     {
                         ScienceJournal journal = item as ScienceJournal;
-                        row["Category"] = journal.Category;
+                        row["Category"] = ((NameAttr)typeof(ScienceJournal.Categories).GetField(journal.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
                     }
                     table.Rows.Add(row);
                 }

@@ -20,7 +20,7 @@ namespace BookLibDAL
                             { ValidItemParams.EditionNumber, "1" },
                             { ValidItemParams.CopyNumber, "1" },
                             { ValidItemParams.Location, "D:22"}
-                        }, DateTime.MinValue, ChildrenBook.Categories.Fantasy));
+                        }, DateTime.MinValue, ChildrenBook.Categories.HistoricalFiction));
         }
 
         public static ItemCollection Instance
