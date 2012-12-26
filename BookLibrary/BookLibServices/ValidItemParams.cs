@@ -10,7 +10,6 @@ namespace BookLibServices
         Name,
         Author,
         Location,
-        CopyNumber,
         EditionNumber,
         ISBN
     }

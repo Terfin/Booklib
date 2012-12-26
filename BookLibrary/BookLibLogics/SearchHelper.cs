@@ -61,7 +61,7 @@ namespace BookLibLogics
             }
         }
 
-        public static List<AbstractItem> searchByType(string type, List<AbstractItem> origin = null)
+        public static List<AbstractItem> searchByType(string type, List<AbstractItem> origin)
         {
             origin = origin == null ? collection.Items : origin;
             string fixedType = type.Replace(" ", string.Empty);

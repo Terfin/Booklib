@@ -29,13 +29,13 @@ namespace BookLibrary
         private Utils utilities = Utils.Instance;
         private DynamicData data = DynamicData.Instance;
         Dictionary<string, string> parameters;
-        AbstractItem editedItem;
-        SearchObject sobj;
-        DateTime editedItemPublishDate;
         private string selectedType;
         private string selectedSubtype;
         private string selectedCategory;
+        public editTypes etype;
+        AbstractItem editedItem;
         ObservableCollection<string> _subTypes = new ObservableCollection<string>();
+        public event EventHandler editActionCompleted;
 
         public enum editTypes
         {
@@ -45,7 +45,6 @@ namespace BookLibrary
         public editItemWindow(editTypes edType, AbstractItem item = null)
         {
             InitializeComponent();
-            editedItem = item;
             List<Type> tlist = typeof(Book).Assembly.GetTypes().ToList<Type>();
             List<string> Types = new List<string>()
                 {
@@ -56,63 +55,70 @@ namespace BookLibrary
             typeCombo.DataContext = this;
             subTypeCombo.DataContext = this;
             categoryCombo.DataContext = this;
+            etype = edType;
             if (edType == editTypes.Add)
             {
                 saveButton.Visibility = System.Windows.Visibility.Hidden;
                 addButton.Visibility = System.Windows.Visibility.Visible;
             }
-            else if (edType == editTypes.Edit)
+            else if (edType == editTypes.Edit)                                                  
             {
-                addButton.Visibility = System.Windows.Visibility.Hidden;
-                saveButton.Visibility = System.Windows.Visibility.Visible;
-                sobj = getSearchObject(item);
-                SelectedType = sobj.Type;
-                SelectedSubtype = sobj.Subtype;
-                SelectedCategory = sobj.Category;
-                this.DataContext = sobj;
+                editedItem = item;
+                editItem(item);
             }
         }
 
-        private SearchObject getSearchObject(AbstractItem item)
+        private void editItem(AbstractItem item)
         {
-            FieldInfo fi = null;
-            parameters = null;
-            DateTime itemPrintDate = DateTime.MinValue;
-            if (item is ChildrenBook)
+            addButton.Visibility = System.Windows.Visibility.Hidden;
+            saveButton.Visibility = System.Windows.Visibility.Visible;
+            SelectedType = item.GetType().IsSubclassOf(typeof(Book)) ? "Book" : "Journal";
+            SelectedSubtype = ((NameAttr)item.GetType().GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
+            bestsellerInp.DataContext = this;
+            itemSubjectInp.DataContext = this;
+            if (item.GetType().IsSubclassOf(typeof(Book)))
             {
-                ChildrenBook book = item as ChildrenBook;
-                parameters = getParamsByBook(book);
-                fi = book.Category.GetType().GetField(book.Category.ToString());
-                itemPrintDate = book.PrintDate;
-                this.DataContext = book;
+                if (item is RegularBook)
+                {
+                    RegularBook book = item as RegularBook;
+                    object[] refCat = typeof(RegularBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false);
+                    SelectedCategory = refCat.Length > 0 ? ((NameAttr)refCat[0]).Desc : book.Category.ToString();
+                    this.DataContext = book;
+                }
+                else if (item is ChildrenBook)
+                {
+                    ChildrenBook book = item as ChildrenBook;
+                    object[] refCat = typeof(ChildrenBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false);
+                    SelectedCategory = refCat.Length > 0 ? ((NameAttr)refCat[0]).Desc : book.Category.ToString();
+                    this.DataContext = book;
+                }
+                else if (item is StudyBook)
+                {
+                    StudyBook book = item as StudyBook;
+                    object[] refCat = typeof(StudyBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false);
+                    SelectedCategory = refCat.Length > 0 ? ((NameAttr)refCat[0]).Desc : book.Category.ToString();
+                    this.DataContext = book;
+                }
+                IsBestseller = ((Book)item).IsBestseller;
             }
-            else if (item is RegularBook)
+            else if (item.GetType().IsSubclassOf(typeof(Journal)))
             {
-                RegularBook book = item as RegularBook;
-                parameters = getParamsByBook(book);
-                fi = book.Category.GetType().GetField(book.Category.ToString());
+                if (item is RegularJournal)
+                {
+                    RegularJournal journal = item as RegularJournal;
+                    object[] refCat = typeof(RegularJournal.Categories).GetField(journal.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false);
+                    SelectedCategory = refCat.Length > 0 ? ((NameAttr)refCat[0]).Desc : journal.Category.ToString();
+                    this.DataContext = journal;
+                }
+                else if (item is ScienceJournal)
+                {
+                    ScienceJournal journal = item as ScienceJournal;
+                    object[] refCat = typeof(ScienceJournal.Categories).GetField(journal.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false);
+                    SelectedCategory = refCat.Length > 0 ? ((NameAttr)refCat[0]).Desc : journal.Category.ToString();
+                    this.DataContext = journal;
+                }
+                Subject = ((Journal)item).Subject;
             }
-            else if (item is StudyBook)
-            {
-                StudyBook book = item as StudyBook;
-                parameters = getParamsByBook(book);
-                fi = book.Category.GetType().GetField(book.Category.ToString());
-            }
-            else if (item is RegularJournal)
-            {
-                RegularJournal journal = item as RegularJournal;
-                parameters = getParamsByJournal(journal);
-                fi = journal.Category.GetType().GetField(journal.Category.ToString());
-            }
-            else if (item is ScienceJournal)
-            {
-                ScienceJournal journal = item as ScienceJournal;
-                parameters = getParamsByJournal(journal);
-                fi = journal.Category.GetType().GetField(journal.Category.ToString());
-            }
-            parameters["Category"] = ((NameAttr)fi.GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
-            SearchObject sobj = new SearchObject(parameters, itemPrintDate);
-            return sobj;
         }
 
         private Dictionary<string, string> getParamsByJournal(Journal journal)
@@ -151,6 +157,16 @@ namespace BookLibrary
             }
             set
             {
+                if (value == "Book")
+                {
+                    itemSubjectInp.IsEnabled = false;
+                    bestsellerInp.IsEnabled = true;
+                }
+                else if (value == "Journal")
+                {
+                    itemSubjectInp.IsEnabled = true;
+                    bestsellerInp.IsEnabled = false;
+                }
                 selectedType = value;
                 List<string> subtypes = utilities.getSubTypes(new List<string>()
                 {
@@ -193,7 +209,8 @@ namespace BookLibrary
         }
 
         public string SelectedCategory { get; set; }
-        public string Edition { get; private set; }
+        public string Subject { get; set; }
+        public bool IsBestseller { get; set; }
         public ObservableCollection<string> Subtypes
         {
             get { return _subTypes; }
@@ -202,54 +219,114 @@ namespace BookLibrary
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            CSharpCodeProvider provider = new CSharpCodeProvider();
-            
-            AbstractItem item;
-            bool newItem = false;
-            if (SelectedSubtype != ((NameAttr)editedItem.GetType().GetCustomAttributes(typeof(NameAttr), false)[0]).Desc)
+            try
             {
-                data.RemoveItem(editedItem);
-                newItem = true;
+                if (SelectedSubtype != ((NameAttr)editedItem.GetType().GetCustomAttributes(typeof(NameAttr), false)[0]).Desc)
+                {
+                    data.RemoveItem(editedItem);
+                    createNewItem();
+                }
+                else
+                {
+                    editExistingItem();
+                }
+                editActionCompleted(this, null);
             }
-            if (sobj.Name != editedItem.Name)
+            catch (InvalidCastException error)
             {
+                MessageBox.Show(error.Message);
             }
-            
         }
 
-        private AbstractItem createNewItem()
+        private void createNewItem()
         {
-            string codeToRun = "";
-            codeToRun += getNewInstanceString(codeToRun);
-        }
-
-
-        private string getNewInstanceString(string codeToRun)
-        {
-            string realTypestr = selectedSubtype.Replace("&", string.Empty);
-            realTypestr = realTypestr.Replace(" ", string.Empty);
-            Type itemType = Type.GetType(string.Format("BookLibServices.{0}, BookLibServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", realTypestr));
+            Dictionary<ValidItemParams, string> newItemParams = new Dictionary<ValidItemParams,string>()
+            {
+                { ValidItemParams.Name, nameField.Text },
+                { ValidItemParams.ISBN, serialNumInp.Text },
+                { ValidItemParams.Author, authorInp.Text },
+                { ValidItemParams.EditionNumber, itemEditionInp.Text },
+                { ValidItemParams.Location, locBox.Text }
+            };
+            string realType = selectedSubtype.Replace(" ", string.Empty);
+            Type itemType = Type.GetType(string.Format("BookLibServices.{0}, BookLibServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", realType));
+            string refinedCategory = SelectedCategory.Replace("&", string.Empty);
+            refinedCategory = refinedCategory.Replace(" ", string.Empty);
+            AbstractItem item = null;
             if (itemType == typeof(RegularBook))
             {
-                return "new RegularBook(";
+                item = new RegularBook(newItemParams, (DateTime)dateFromPicker.SelectedDate, (RegularBook.Categories)Enum.Parse(typeof(RegularBook.Categories), refinedCategory), IsBestseller);
             }
             else if (itemType == typeof(ChildrenBook))
             {
-                return "new ChildrenBook(";
+                item = new ChildrenBook(newItemParams, (DateTime)dateFromPicker.SelectedDate, (ChildrenBook.Categories)Enum.Parse(typeof(ChildrenBook.Categories), refinedCategory), IsBestseller);
             }
             else if (itemType == typeof(StudyBook))
             {
-                return "new StudyBook(";
+                item = new StudyBook(newItemParams, (DateTime)dateFromPicker.SelectedDate, (StudyBook.Categories)Enum.Parse(typeof(StudyBook.Categories), refinedCategory), IsBestseller);
             }
             else if (itemType == typeof(RegularJournal))
             {
-                return "new RegularJournal(";
+                item = new RegularJournal(newItemParams, (DateTime)dateFromPicker.SelectedDate, Subject, (RegularJournal.Categories)Enum.Parse(typeof(RegularJournal.Categories), refinedCategory));
             }
             else if (itemType == typeof(ScienceJournal))
             {
-                return "new ScienceJournal(";
+                item = new ScienceJournal(newItemParams, (DateTime)dateFromPicker.SelectedDate, Subject, (ScienceJournal.Categories)Enum.Parse(typeof(ScienceJournal.Categories), refinedCategory));
             }
-            return "";
+            data.AddItem(item);
+        }
+
+        private void editExistingItem()
+        {
+            int editionNumber;
+            if (int.TryParse(itemEditionInp.Text, out editionNumber))
+            {
+                editedItem.Edition = editionNumber;
+            }
+            else
+            {
+                throw new InvalidCastException("Edition must be a number only!");
+            }
+            string refinedCategory = SelectedCategory.Replace("&", string.Empty);
+            refinedCategory = refinedCategory.Replace(" ", string.Empty);
+            editedItem.Name = nameField.Text;
+            editedItem.ISBN = new ISBN(serialNumInp.Text);
+            editedItem.Location = locBox.Text;
+            editedItem.PrintDate = (DateTime)dateFromPicker.SelectedDate;
+            editedItem.Author = authorInp.Text;
+            if (editedItem.GetType().IsSubclassOf(typeof(Book)))
+            {
+                if (editedItem is RegularBook)
+                {
+                    RegularBook book = editedItem as RegularBook;
+                    book.Category = (RegularBook.Categories)Enum.Parse(typeof(RegularBook.Categories), refinedCategory);
+                }
+                else if (editedItem is ChildrenBook)
+                {
+                    ChildrenBook book = editedItem as ChildrenBook;
+                    book.Category = (ChildrenBook.Categories)Enum.Parse(typeof(ChildrenBook.Categories), refinedCategory);
+                }
+                else if (editedItem is StudyBook)
+                {
+                    StudyBook book = editedItem as StudyBook;
+                    book.Category = (StudyBook.Categories)Enum.Parse(typeof(StudyBook.Categories), refinedCategory);
+                }
+                ((Book)editedItem).IsBestseller = IsBestseller;
+            }
+            else if (editedItem.GetType().IsSubclassOf(typeof(Journal)))
+            {
+                if (editedItem is RegularJournal)
+                {
+                    RegularJournal journal = editedItem as RegularJournal;
+                    journal.Category = (RegularJournal.Categories)Enum.Parse(typeof(RegularJournal.Categories), refinedCategory);
+                }
+                else if (editedItem is ScienceJournal)
+                {
+                    ScienceJournal journal = editedItem as ScienceJournal;
+                    journal.Category = (ScienceJournal.Categories)Enum.Parse(typeof(ScienceJournal.Categories), refinedCategory);
+                }
+                ((Journal)editedItem).Subject = Subject;
+            }
         }
     }
 }

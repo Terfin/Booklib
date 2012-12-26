@@ -11,6 +11,7 @@ namespace BookLibDAL
     public class ItemCollection : List<AbstractItem>
     {
         private static ItemCollection instance;
+        private static List<string> RegisteredISBNs = new List<string>();
         private ItemCollection()
         {
             this.Add(new ChildrenBook(new Dictionary<ValidItemParams, string>()
@@ -18,9 +19,9 @@ namespace BookLibDAL
                             { ValidItemParams.Name, "foobar" },
                             { ValidItemParams.Author, "moshe" },
                             { ValidItemParams.EditionNumber, "1" },
-                            { ValidItemParams.CopyNumber, "1" },
                             { ValidItemParams.Location, "D:22"}
                         }, DateTime.MinValue, ChildrenBook.Categories.HistoricalFiction));
+            ISBN.ISBNRegistrationChanged += ApproveISBNRegistration;
         }
 
         public static ItemCollection Instance
@@ -71,6 +72,18 @@ namespace BookLibDAL
             get
             {
                 return this.FindAll(x => x.Name.ToLower().Contains(name.ToLower()));
+            }
+        }
+
+        public void ApproveISBNRegistration(object sender, EventArgs e)
+        {
+            if (RegisteredISBNs.Contains(((ISBN)sender).Number))
+            {
+                throw new InvalidSerialNumberException("Serial number already exists! Make sure you've typed the correct number!");
+            }
+            else
+            {
+                RegisteredISBNs.Add(((ISBN)sender).Number);
             }
         }
 

@@ -104,29 +104,36 @@ namespace BookLibrary
                     {
                         ChildrenBook book = item as ChildrenBook;
                         generateRowFromItem(book, row);
-                        row["Category"] = ((NameAttr)typeof(ChildrenBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
+                        object[] refCat = typeof(ChildrenBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false);
+                        row["Category"] = refCat.Length > 0 ? ((NameAttr)refCat[0]).Desc : book.Category.ToString();
                     }
                     if (item.GetType() == typeof(RegularBook))
                     {
                         RegularBook book = item as RegularBook;
                         generateRowFromItem(book, row);
-                        row["Category"] = ((NameAttr)typeof(RegularBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
+                        object[] refCat = typeof(RegularBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false);
+                        row["Category"] = refCat.Length > 0 ? ((NameAttr)refCat[0]).Desc : book.Category.ToString();
                     }
                     if (item.GetType() == typeof(StudyBook))
                     {
                         StudyBook book = item as StudyBook;
                         generateRowFromItem(book, row);
-                        row["Category"] = ((NameAttr)typeof(StudyBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
+                        object[] refCat = typeof(StudyBook.Categories).GetField(book.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false);
+                        row["Category"] = refCat.Length > 0 ? ((NameAttr)refCat[0]).Desc : book.Category.ToString();
                     }
                     if (item.GetType() == typeof(RegularJournal))
                     {
                         RegularJournal journal = item as RegularJournal;
-                        row["Category"] = ((NameAttr)typeof(RegularJournal.Categories).GetField(journal.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
+                        generateRowFromItem(journal, row);
+                        object[] refCat = typeof(RegularJournal.Categories).GetField(journal.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false);
+                        row["Category"] = refCat.Length > 0 ? ((NameAttr)refCat[0]).Desc : journal.Category.ToString();
                     }
                     if (item.GetType() == typeof(ScienceJournal))
                     {
                         ScienceJournal journal = item as ScienceJournal;
-                        row["Category"] = ((NameAttr)typeof(ScienceJournal.Categories).GetField(journal.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
+                        generateRowFromItem(journal, row);
+                        object[] refCat = typeof(ScienceJournal.Categories).GetField(journal.Category.ToString()).GetCustomAttributes(typeof(NameAttr), false);
+                        row["Category"] = refCat.Length > 0 ? ((NameAttr)refCat[0]).Desc : journal.Category.ToString();
                     }
                     table.Rows.Add(row);
                 }
@@ -138,7 +145,7 @@ namespace BookLibrary
             row["ISBN"] = item.ISBN.Number;
             row["Name"] = item.Name;
             row["Author"] = item.Author;
-            row["Subtype"] = item.GetType().Name;
+            row["Subtype"] = ((NameAttr)item.GetType().GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
             row["Publish Date"] = item.PrintDate;
             row["Location"] = item.Location;
             row["Edition"] = item.Edition;

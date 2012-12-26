@@ -80,5 +80,9 @@ namespace BookLibLogics
             }
         }
 
+        public void AddItem(AbstractItem item)
+        {
+            coll.Add(item);
+        }
     }
 }

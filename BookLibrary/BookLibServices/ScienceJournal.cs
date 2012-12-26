@@ -27,6 +27,6 @@ namespace BookLibServices
             this.Category = cat;
         }
 
-        public Categories Category { get; private set; }
+        public Categories Category { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace BookLibServices
             this.Subject = subject;
         }
         
-        public string Subject { get; private set; }
+        public string Subject { get; set; }
 
     }
 }

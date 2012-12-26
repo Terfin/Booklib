@@ -8,6 +8,7 @@ namespace BookLibServices
     public class ISBN
     {
         private delegate string ISBNGenerator(string number);
+        public static event EventHandler ISBNRegistrationChanged;
 
         private static string lastNumber;
         

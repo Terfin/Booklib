@@ -39,7 +39,9 @@ namespace BookLibrary
 
         void sresults_EditActionInvoked(object sender, EventArgs e)
         {
-            expanderContent.Content = new editItemWindow(editItemWindow.editTypes.Edit, (AbstractItem)sender);
+            editItemWindow editWindow = new editItemWindow(editItemWindow.editTypes.Edit, (AbstractItem)sender);
+            editWindow.editActionCompleted += editDone;
+            expanderContent.Content = editWindow;
         }
 
         private void OptionsExpander_Expanded(object sender, RoutedEventArgs e)
@@ -102,6 +104,23 @@ namespace BookLibrary
 
         public void searchComplete(List<AbstractItem> items)
         {
+            optionsExpander.IsExpanded = false;
+        }
+
+        public void editDone(object sender, EventArgs e)
+        {
+            editItemWindow editedItemWindow = (editItemWindow)sender;
+            dyndata.Search(new List<List<string>>()
+            {
+                new List<string>()
+                {
+                    editedItemWindow.serialNumInp.Text
+                }
+            }, new List<DynamicData.SearchFunction>()
+            {
+                SearchHelper.searchByISBN
+            });
+            optionsExpander.IsExpanded = true;
             optionsExpander.IsExpanded = false;
         }
     }

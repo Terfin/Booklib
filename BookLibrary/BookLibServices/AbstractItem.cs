@@ -24,14 +24,14 @@ namespace BookLibServices
         {
             this.Name = parameters[ValidItemParams.Name];
             this.PrintDate = printDate;
-            this.ISBN = new ISBN();
-            if (int.TryParse(parameters[ValidItemParams.CopyNumber], out _copyNumber))
-            { }
+            if (parameters.ContainsKey(ValidItemParams.ISBN))
+            {
+                this.ISBN = new ISBN(parameters[ValidItemParams.ISBN]);
+            }
             else
             {
-                throw new InvalidParameterException("Invalid copy number! Copy must be a number!");
+                this.ISBN = new ISBN();
             }
-
             if (int.TryParse(parameters[ValidItemParams.EditionNumber], out _edition))
             { }
             else
@@ -43,17 +43,11 @@ namespace BookLibServices
         }
 
 
-        public ISBN ISBN { get; private set; }
-        public string Type { get { return this.GetType().ToString(); } }
-        public string Name { get; private set; }
-        public DateTime PrintDate { get; private set; }
-        public string Location { get; private set; }
-        public string Author { get; private set; }
-        public int CopyNumber
-        {
-            get { return _copyNumber; }
-            set { _copyNumber = value; }
-        }
+        public ISBN ISBN { get; set; }
+        public string Name { get;  set; }
+        public DateTime PrintDate { get; set; }
+        public string Location { get; set; }
+        public string Author { get; set; }
         public int Edition
         {
             get { return _edition; }
