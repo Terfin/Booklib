@@ -6,12 +6,12 @@
         <Grid.Background>
             <ImageBrush ImageSource="/BookLibrary;component/bluegredient.jpg" />
         </Grid.Background>
-        <ContentControl Height="600" HorizontalAlignment="Left" Margin="12,69,0,0" Name="mainContent" VerticalAlignment="Top" Width="978" />
+        <ContentControl Height="600" HorizontalAlignment="Left" Margin="0,69,0,0" Name="mainContent" VerticalAlignment="Top" Width="1002" />
         <Image Height="50" HorizontalAlignment="Left" Margin="320,12,0,0" Name="logoImage" Stretch="Fill" VerticalAlignment="Top" Width="50" />
         <TextBlock Height="50" HorizontalAlignment="Right" Margin="0,12,320,0" Name="titleBlock" Text="Book Library 2012" VerticalAlignment="Top" Width="294" FontSize="36" />
         <Button Content="Manager Login" Height="23" HorizontalAlignment="Left" Margin="899,12,0,0" Name="managerButton" VerticalAlignment="Top" Width="91" />
         <Button Content="Librarian Login" Height="22" HorizontalAlignment="Left" Margin="899,41,0,0" Name="librarianButton" VerticalAlignment="Top" Width="91" />
-        <ContentControl Height="150" HorizontalAlignment="Left" Margin="689,69,0,0" Name="loginContent" VerticalAlignment="Top" Width="300   " />
+        <ContentControl Height="150" HorizontalAlignment="Left" Margin="701,69,0,0" Name="loginContent" VerticalAlignment="Top" Width="300   " />
     </Grid>
 </Window>
 

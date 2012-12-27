@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Width="978" Height="600">
+             d:DesignHeight="300" d:DesignWidth="300" Width="1000" Height="600">
     <Grid>
         <Button Content="Search" Height="25" HorizontalAlignment="Right" Margin="0,8,108,0" Name="searchButton" VerticalAlignment="Top" Width="100" FontSize="16" Click="SearchButton_Click" />
         <TextBox Height="25" HorizontalAlignment="Left" Margin="252,10,0,0" Name="itemNameInp" VerticalAlignment="Top" Width="512" />
         <TextBlock Height="25" HorizontalAlignment="Left" Margin="161,12,0,0" Name="itemNameBlock" Text="Item Name" VerticalAlignment="Top" Width="85" FontSize="16" TextAlignment="Center" />
         <Expander Header="More Search Options" Height="23" HorizontalAlignment="Left" Margin="12,12,0,0" Name="optionsExpander" VerticalAlignment="Top" Width="143" ExpandDirection="Down" Expanded="OptionsExpander_Expanded" Collapsed="OptionsExpander_Collapsed" />
-        <ContentControl Height="547" HorizontalAlignment="Left" Margin="12,41,0,0" Name="expanderContent" VerticalAlignment="Top" Width="954" />
+        <ContentControl Height="547" HorizontalAlignment="Left" Margin="12,41,0,0" Name="expanderContent" VerticalAlignment="Top" Width="976" />
         <Button Content="New Item" Height="25" HorizontalAlignment="Right" Margin="0,8,12,0" Name="addItemButton" VerticalAlignment="Top" Visibility="Visible" Width="90" FontSize="16" Click="addItemButton_Click" />
     </Grid>
 </UserControl>

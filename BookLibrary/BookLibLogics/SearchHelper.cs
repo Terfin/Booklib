@@ -15,7 +15,7 @@ namespace BookLibLogics
 
         public static List<AbstractItem> searchByName(string name, List<AbstractItem> origin = null)
         {
-            if (origin == null)
+            if (origin.Count == 0)
             {
                 return collection[name];
             }
@@ -27,7 +27,7 @@ namespace BookLibLogics
 
         public static List<AbstractItem> searchByAuthor(string author, List<AbstractItem> origin = null)
         {
-            if (origin == null)
+            if (origin.Count == 0)
             {
                 return collection.FindAll(x => x.Author == author);
             }
@@ -39,7 +39,7 @@ namespace BookLibLogics
 
         public static List<AbstractItem> searchByEdition(string edition, List<AbstractItem> origin = null)
         {
-            if (origin == null)
+            if (origin.Count == 0)
             {
                 return collection.FindAll(x => x.Edition == int.Parse(edition));
             }
@@ -51,7 +51,7 @@ namespace BookLibLogics
 
         public static List<AbstractItem> searchByISBN(string serial, List<AbstractItem> origin = null)
         {
-            if (origin == null)
+            if (origin == null || origin.Count == 0 )
             {
                 return collection[new ISBN(serial)];
             }
@@ -63,7 +63,7 @@ namespace BookLibLogics
 
         public static List<AbstractItem> searchByType(string type, List<AbstractItem> origin)
         {
-            origin = origin == null ? collection.Items : origin;
+            origin = origin == null || origin.Count == 0 ? collection.Items : origin;
             string fixedType = type.Replace(" ", string.Empty);
             Type itemType = Type.GetType(string.Format("BookLibServices.{0}, BookLibServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", fixedType));
             return origin.FindAll(x => x.GetType() == itemType || x.GetType().IsSubclassOf(itemType));
@@ -71,7 +71,7 @@ namespace BookLibLogics
 
         public static List<AbstractItem> searchByCategory(string categoryName, List<AbstractItem> origin = null)
         {
-            origin = origin == null ? collection : origin;
+            origin = origin == null || origin.Count == 0 ? collection : origin;
             string fixedCategory = categoryName.Replace("&", string.Empty);
             fixedCategory = categoryName.Replace(" ", string.Empty);
             return origin.FindAll(x =>

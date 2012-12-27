@@ -12,6 +12,7 @@ namespace BookLibDAL
     {
         private static ItemCollection instance;
         private static List<string> RegisteredISBNs = new List<string>();
+        private static Dictionary<string, List<int>> registeredItemCopies = new Dictionary<string, List<int>>();
         private ItemCollection()
         {
             this.Add(new ChildrenBook(new Dictionary<ValidItemParams, string>()

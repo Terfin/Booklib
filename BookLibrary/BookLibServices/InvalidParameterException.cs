@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BookLibServices
 {
-    class InvalidParameterException : Exception
+    public class InvalidParameterException : Exception
     {
         public InvalidParameterException(string message) : base(message)
         {

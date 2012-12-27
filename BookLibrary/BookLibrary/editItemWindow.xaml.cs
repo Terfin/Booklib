@@ -387,7 +387,14 @@ namespace BookLibrary
 
         private void addButton_Click(object sender, RoutedEventArgs e)
         {
-            createNewItem();
+            try
+            {
+                createNewItem();
+            }
+            catch (InvalidParameterException error)
+            {
+                MessageBox.Show(error.Message);
+            }
         }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)

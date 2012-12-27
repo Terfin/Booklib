@@ -135,19 +135,19 @@ namespace BookLibrary
             }
             foreach (string category in utilities.getCategories(parames))
             {
-                if (categories1.Count < 9)
+                if (categories1.Count < 8)
                 {
                     categories1.Add(category);
                 }
-                else if (categories1.Count >= 9 && categories2.Count < 9)
+                else if (categories1.Count >= 8 && categories2.Count < 8)
                 {
                     categories2.Add(category);
                 }
-                else if (categories2.Count >= 9 && categories3.Count < 9)
+                else if (categories2.Count >= 8 && categories3.Count < 8)
                 {
                     categories3.Add(category);
                 }
-                else if (categories3.Count >= 9 && categories4.Count < 9)
+                else if (categories3.Count >= 8 && categories4.Count < 8)
                 {
                     categories4.Add(category);
                 }

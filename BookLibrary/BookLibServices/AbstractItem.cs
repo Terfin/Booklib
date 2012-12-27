@@ -15,9 +15,8 @@ namespace BookLibServices
 
     public abstract class AbstractItem
     {
-        //private delegate void Notifier(object sender, string message);
-        //public event Notifier ErrorOccured;
         private int _edition;
+        private static List<AbstractItem> existingItems = new List<AbstractItem>();
         public AbstractItem(Dictionary<ValidItemParams, string> parameters, DateTime printDate)
         {
             this.Name = parameters[ValidItemParams.Name];
@@ -41,6 +40,10 @@ namespace BookLibServices
             }
             this.Location = parameters[ValidItemParams.Location];
             this.Author = parameters[ValidItemParams.Author];
+            if (!existingItems.Contains(this))
+            {
+                existingItems.Add(this);
+            }
         }
 
 
