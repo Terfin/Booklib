@@ -75,10 +75,24 @@ namespace BookLibrary
                     listOfValuesLists.Add(new List<string>() { stype.itemEditionInp.Text });
                     searchFuncSet.Add(SearchHelper.searchByEdition);
                 }
-                if (stype.serialNumInp.Text.Length > 0)
+                if (stype.authorInp.Text.Length > 0)
                 {
                     listOfValuesLists.Add(new List<string>() { stype.authorInp.Text });
                     searchFuncSet.Add(SearchHelper.searchByAuthor);
+                }
+                string dateString = "";
+                if (stype.dateFromPicker.SelectedDate != null)
+                {
+                    dateString += ((DateTime)stype.dateFromPicker.SelectedDate).Date;
+                }
+                if (stype.dateToPicker.SelectedDate != null)
+                {
+                    dateString += "-" + ((DateTime)stype.dateToPicker.SelectedDate).Date;
+                }
+                if (dateString.Length > 0)
+                {
+                    listOfValuesLists.Add(new List<string>() { dateString });
+                    searchFuncSet.Add(SearchHelper.searchByDate);
                 }
                 Dictionary<string, bool> checkedTypes = stype.CheckedTypes.Where(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 Dictionary<string, bool> checkedSubtypes = stype.CheckedSubtypes.Where(x => x.Value).ToDictionary(x => x.Key, x => x.Value);

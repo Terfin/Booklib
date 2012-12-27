@@ -7,6 +7,12 @@ using BookLibServices;
 
 namespace BookLibrary
 {
+    /*
+     * Part 3 of BookLib Logics.
+     * This class contains several utility functions,
+     * This class could be a static class instead of a singleton,
+     * I did it as singleton mainly to memorize the pattern
+     */
     public class Utils
     {
         private static Utils instance;
@@ -31,7 +37,7 @@ namespace BookLibrary
             }
         }
 
-        private void genCategories()
+        private void genCategories() // Generates a category dictionary that can be easily queried to assist with UI functions.
         {
             Assembly amb = typeof(AbstractItem).Assembly;
             foreach (Type type in amb.GetTypes())
@@ -67,7 +73,7 @@ namespace BookLibrary
             }
         }
 
-        private void genSubtypes()
+        private void genSubtypes() //This method generates two lists of types, one for Book based types and one for Journal based types.
         {
             Assembly assemTypes = typeof(AbstractItem).Assembly;
             foreach (Type type in assemTypes.GetTypes())
@@ -100,7 +106,7 @@ namespace BookLibrary
             }
         }
 
-        public List<string> getCategories(List<string> subTypes)
+        public List<string> getCategories(List<string> subTypes) //Returns a list of categories.... that's it.
         {
             List<string> categories = new List<string>();
             foreach (string type in subTypes)
@@ -110,7 +116,7 @@ namespace BookLibrary
             return categories;
         }
 
-        public List<string> getSubTypes(List<string> types)
+        public List<string> getSubTypes(List<string> types) //Returns a list of types...
         {
             List<string> matchSubtypes = new List<string>();
             if (types.Contains("journal"))

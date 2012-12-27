@@ -41,7 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamicData.cs" />
-    <Compile Include="ISearchStatusNotifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchHelper.cs" />
     <Compile Include="Utils.cs" />

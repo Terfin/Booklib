@@ -11,7 +11,7 @@ namespace BookLibDAL
     public class ItemCollection : List<AbstractItem>
     {
         private static ItemCollection instance;
-        private static List<string> RegisteredISBNs = new List<string>();
+        private static List<ISBN> RegisteredISBNs = new List<ISBN>();
         private static Dictionary<string, List<int>> registeredItemCopies = new Dictionary<string, List<int>>();
         private ItemCollection()
         {
@@ -37,7 +37,6 @@ namespace BookLibDAL
                             {ValidItemParams.EditionNumber, "2"},
                             {ValidItemParams.Location, "A:35"}
                         }, DateTime.MinValue, "The great cornholio", RegularJournal.Categories.FinanceEconomy));
-            ISBN.ISBNRegistrationChanged += ApproveISBNRegistration;
         }
 
         public static ItemCollection Instance
@@ -91,15 +90,17 @@ namespace BookLibDAL
             }
         }
 
-        public void ApproveISBNRegistration(object sender, EventArgs e)
+        public bool ApproveISBNRegistration(ISBN serial)
         {
-            if (RegisteredISBNs.Contains(((ISBN)sender).Number))
+            if (RegisteredISBNs.Contains(serial))
             {
-                throw new InvalidSerialNumberException("Serial number already exists! Make sure you've typed the correct number!");
+                return false;
+                //throw new InvalidSerialNumberException("Serial number already exists! Make sure you've typed the correct number!");
             }
             else
             {
-                RegisteredISBNs.Add(((ISBN)sender).Number);
+                RegisteredISBNs.Add(serial);
+                return true;
             }
         }
 

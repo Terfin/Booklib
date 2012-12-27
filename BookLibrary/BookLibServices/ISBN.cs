@@ -5,10 +5,13 @@ using System.Text;
 
 namespace BookLibServices
 {
+    /*
+     * This class represents a unique serial number which can belong only to one book,
+     * but can belong to as many copies as there are of that book.
+     */
     public class ISBN
     {
         private delegate string ISBNGenerator(string number);
-        public static event EventHandler ISBNRegistrationChanged;
 
         private static string lastNumber;
         
@@ -93,6 +96,12 @@ namespace BookLibServices
         public override bool Equals(object obj)
         {
             return ((ISBN)obj).Number == this.Number;
+        }
+
+        public override int GetHashCode()
+        {
+            string hashcode = Number.Replace("-", string.Empty);
+            return int.Parse(hashcode);
         }
 
         public string Number { get; private set; }

@@ -9,9 +9,19 @@ using System.Reflection;
 
 namespace BookLibLogics
 {
+    /*
+     * Part 2 of the logics tier.
+     * Well, this class provides all the needed search functions
+     * It is static, for obvious reasons.
+     */
     public static class SearchHelper
-    {       
-        private static ItemCollection collection = ItemCollection.Instance;
+    {
+        private static ItemCollection collection = ItemCollection.Instance; //Just getting the instance of the itemcollection so we can query it
+
+        /*
+         * All the methods in this class have the same structure, get a string parameter and an optional list of items and return a list of items
+         * 
+         */
 
         public static List<AbstractItem> searchByName(string name, List<AbstractItem> origin = null)
         {
@@ -63,6 +73,11 @@ namespace BookLibLogics
 
         public static List<AbstractItem> searchByType(string type, List<AbstractItem> origin)
         {
+            /*
+             * We get the string representation of the type of object,
+             * use reflection to get its actual type and then query the db
+             * for any item that either matches that type or is a child of that type.
+             */
             origin = origin == null || origin.Count == 0 ? collection.Items : origin;
             string fixedType = type.Replace(" ", string.Empty);
             Type itemType = Type.GetType(string.Format("BookLibServices.{0}, BookLibServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", fixedType));
@@ -71,6 +86,11 @@ namespace BookLibLogics
 
         public static List<AbstractItem> searchByCategory(string categoryName, List<AbstractItem> origin = null)
         {
+            /*
+             * More or less like searching by type, only here, since we have a different set of categories
+             * for every different type, we need to check the item's type first and then cast it into the right type.
+             * All is done inside the lambda expression.
+             */
             origin = origin == null || origin.Count == 0 ? collection : origin;
             string fixedCategory = categoryName.Replace("&", string.Empty);
             fixedCategory = categoryName.Replace(" ", string.Empty);
@@ -110,6 +130,11 @@ namespace BookLibLogics
 
         public static List<AbstractItem> searchByDate(string dateRange, List<AbstractItem> origin = null)
         {
+            /*
+             * Search by a date, either a single date or a range of dates.
+             * Basically, this method is prepared to deal with inputs of number of ranges.
+             * Date input must be formatted in the followin way: dd/MM/yyyy-dd/MM/yyyy-dd/MM/yyyy-dd/MM/yyyy... and so on.
+             */
             string[] rawDates = dateRange.Split('-');
             List<DateTime> dates = new List<DateTime>();
             CultureInfo culture = new CultureInfo("he-IL");
@@ -117,7 +142,7 @@ namespace BookLibLogics
             foreach (string date in rawDates)
             {
                 DateTime iterDate = DateTime.MinValue;
-                string fixedDate = date.Replace(" ", string.Empty);
+                string fixedDate = date.Split(' ')[0];
                 if (DateTime.TryParseExact(fixedDate, "dd/MM/yyyy", culture, DateTimeStyles.None, out iterDate))
                 {
                     dates.Add(iterDate);
@@ -131,7 +156,7 @@ namespace BookLibLogics
             for (int i = 0; i < (dates.Count % 2 == 0 ? dates.Count / 2 : (dates.Count / 2) + 1); i++)
             {
                 List<AbstractItem> itermediateResults = new List<AbstractItem>();
-                for (int j = i * 2; j < dates.Count; i++)
+                for (int j = i * 2; j < dates.Count; j++)
                 {
                     if (j % 2 == 0)
                     {

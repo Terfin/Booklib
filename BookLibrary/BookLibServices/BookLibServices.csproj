@@ -50,7 +50,6 @@
     <Compile Include="Librarian.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="NameAttr.cs" />
-    <Compile Include="OutOfStockException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegularBook.cs" />
     <Compile Include="RegularJournal.cs" />

@@ -9,17 +9,19 @@ namespace BookLibServices
 {
     /*
      * This is the base class of the project, AbstractItem, it is abstract and thus cannot be instantiated
-     * Every item, whether it is a book or a journal, has at least a name, print date, category, identifying number and a number of copies that currently exist in the library
+     * Mandatory parameters to be passed in the constructor: name, print date and author.
+     * Optional parameters: edition, ISBN (an object by itself), location.
      * 
      */
 
     public abstract class AbstractItem
     {
         private int _edition;
-        private static List<AbstractItem> existingItems = new List<AbstractItem>();
         public AbstractItem(Dictionary<ValidItemParams, string> parameters, DateTime printDate)
         {
             this.Name = parameters[ValidItemParams.Name];
+            this.Location = parameters[ValidItemParams.Location];
+            this.Author = parameters[ValidItemParams.Author];
             this.PrintDate = printDate;
             if (parameters.ContainsKey(ValidItemParams.ISBN))
             {
@@ -32,17 +34,17 @@ namespace BookLibServices
             if (parameters.ContainsKey(ValidItemParams.EditionNumber))
             {
                 if (int.TryParse(parameters[ValidItemParams.EditionNumber], out _edition))
-                { }
+                {
+                    Edition = _edition;
+                }
                 else
                 {
                     throw new InvalidParameterException("Invalid edition number! Edition must be a number!");
                 }
             }
-            this.Location = parameters[ValidItemParams.Location];
-            this.Author = parameters[ValidItemParams.Author];
-            if (!existingItems.Contains(this))
+            else
             {
-                existingItems.Add(this);
+                Edition = 1;
             }
         }
 
