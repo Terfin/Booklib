@@ -13,7 +13,7 @@ namespace BookLibLogics
     public class DynamicData
     {
         private static DynamicData instance;
-        ItemCollection coll = ItemCollection.Instance;
+        private ItemCollection coll = ItemCollection.Instance;
         public delegate List<AbstractItem> SearchFunction(string parameter, List<AbstractItem> items);
         public delegate void SearchNotifier(List<AbstractItem> items);
         public event SearchNotifier onSearchComplete;
@@ -59,24 +59,46 @@ namespace BookLibLogics
 
         public void RemoveItem(AbstractItem item)
         {
-            coll.Remove(item);
+            while (coll[item.ISBN].Count > 0)
+            {
+                coll.Remove(item);
+            }
+        }
+
+        public void BorrowItem(DataRow dr)
+        {
+            AbstractItem item = GetItemFromDataRow(dr);
+            if (coll.Contains(item))
+            {
+                coll.Remove(item);
+            }
+            Search();
         }
 
         public void Search(List<List<string>> listOfSearchValues, List<SearchFunction> searchFunctions)
         {
-            List<AbstractItem> results = null;
+            HashSet<AbstractItem> results = null;
             for (int i = 0; i < searchFunctions.Count; i++)
             {
                 List<AbstractItem> funcResults = new List<AbstractItem>();
                 foreach (string value in listOfSearchValues[i])
                 {
-                    funcResults.AddRange(searchFunctions[i](value, results));
+                    funcResults.AddRange(searchFunctions[i](value, results.ToList()));
                 }
-                results = funcResults.ToList();
+                results.UnionWith(funcResults);
             }
             if (onSearchComplete != null)
             {
-                onSearchComplete(results);
+                onSearchComplete(results.Distinct().ToList());
+            }
+        }
+
+        public void Search()
+        {
+            HashSet<AbstractItem> results = new HashSet<AbstractItem>(coll);
+            if (onSearchComplete != null)
+            {
+                onSearchComplete(results.Distinct().ToList());
             }
         }
 

@@ -36,6 +36,7 @@ namespace BookLibrary
         AbstractItem editedItem;
         ObservableCollection<string> _subTypes = new ObservableCollection<string>();
         public event EventHandler editActionCompleted;
+        private bool _bestseller;
 
         public enum editTypes
         {
@@ -55,11 +56,14 @@ namespace BookLibrary
             typeCombo.DataContext = this;
             subTypeCombo.DataContext = this;
             categoryCombo.DataContext = this;
+            bestsellerInp.DataContext = this;
+            itemSubjectInp.DataContext = this;
             etype = edType;
             if (edType == editTypes.Add)
             {
                 saveButton.Visibility = System.Windows.Visibility.Hidden;
                 addButton.Visibility = System.Windows.Visibility.Visible;
+                serialNumInp.IsEnabled = false;
             }
             else if (edType == editTypes.Edit)                                                  
             {
@@ -74,8 +78,6 @@ namespace BookLibrary
             saveButton.Visibility = System.Windows.Visibility.Visible;
             SelectedType = item.GetType().IsSubclassOf(typeof(Book)) ? "Book" : "Journal";
             SelectedSubtype = ((NameAttr)item.GetType().GetCustomAttributes(typeof(NameAttr), false)[0]).Desc;
-            bestsellerInp.DataContext = this;
-            itemSubjectInp.DataContext = this;
             if (item.GetType().IsSubclassOf(typeof(Book)))
             {
                 if (item is RegularBook)
@@ -210,7 +212,13 @@ namespace BookLibrary
 
         public string SelectedCategory { get; set; }
         public string Subject { get; set; }
-        public bool IsBestseller { get; set; }
+        public bool IsBestseller
+        {
+            get
+            { return _bestseller; }
+            set
+            { _bestseller = value; }
+        }
         public ObservableCollection<string> Subtypes
         {
             get { return _subTypes; }
@@ -230,7 +238,6 @@ namespace BookLibrary
                 {
                     editExistingItem();
                 }
-                editActionCompleted(this, null);
             }
             catch (InvalidCastException error)
             {
@@ -240,93 +247,152 @@ namespace BookLibrary
 
         private void createNewItem()
         {
-            Dictionary<ValidItemParams, string> newItemParams = new Dictionary<ValidItemParams,string>()
+            if (validateMandatoryInputs())
+            {
+                Dictionary<ValidItemParams, string> newItemParams = new Dictionary<ValidItemParams, string>()
             {
                 { ValidItemParams.Name, nameField.Text },
-                { ValidItemParams.ISBN, serialNumInp.Text },
                 { ValidItemParams.Author, authorInp.Text },
-                { ValidItemParams.EditionNumber, itemEditionInp.Text },
                 { ValidItemParams.Location, locBox.Text }
             };
-            string realType = selectedSubtype.Replace(" ", string.Empty);
-            Type itemType = Type.GetType(string.Format("BookLibServices.{0}, BookLibServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", realType));
-            string refinedCategory = SelectedCategory.Replace("&", string.Empty);
-            refinedCategory = refinedCategory.Replace(" ", string.Empty);
-            AbstractItem item = null;
-            if (itemType == typeof(RegularBook))
-            {
-                item = new RegularBook(newItemParams, (DateTime)dateFromPicker.SelectedDate, (RegularBook.Categories)Enum.Parse(typeof(RegularBook.Categories), refinedCategory), IsBestseller);
+                if (serialNumInp.Text.Length > 0)
+                {
+                    newItemParams[ValidItemParams.ISBN] = serialNumInp.Text;
+                }
+                if (itemEditionInp.Text.Length > 0)
+                {
+                    newItemParams[ValidItemParams.EditionNumber] = itemEditionInp.Text;
+                }
+                string realType = selectedSubtype.Replace(" ", string.Empty);
+                Type itemType = Type.GetType(string.Format("BookLibServices.{0}, BookLibServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", realType));
+                string refinedCategory = SelectedCategory.Replace("&", string.Empty);
+                refinedCategory = refinedCategory.Replace(" ", string.Empty);
+                AbstractItem item = null;
+                if (itemType == typeof(RegularBook))
+                {
+                    item = new RegularBook(newItemParams, (DateTime)dateFromPicker.SelectedDate, (RegularBook.Categories)Enum.Parse(typeof(RegularBook.Categories), refinedCategory), IsBestseller);
+                }
+                else if (itemType == typeof(ChildrenBook))
+                {
+                    item = new ChildrenBook(newItemParams, (DateTime)dateFromPicker.SelectedDate, (ChildrenBook.Categories)Enum.Parse(typeof(ChildrenBook.Categories), refinedCategory), IsBestseller);
+                }
+                else if (itemType == typeof(StudyBook))
+                {
+                    item = new StudyBook(newItemParams, (DateTime)dateFromPicker.SelectedDate, (StudyBook.Categories)Enum.Parse(typeof(StudyBook.Categories), refinedCategory), IsBestseller);
+                }
+                else if (itemType == typeof(RegularJournal))
+                {
+                    item = new RegularJournal(newItemParams, (DateTime)dateFromPicker.SelectedDate, Subject, (RegularJournal.Categories)Enum.Parse(typeof(RegularJournal.Categories), refinedCategory));
+                }
+                else if (itemType == typeof(ScienceJournal))
+                {
+                    item = new ScienceJournal(newItemParams, (DateTime)dateFromPicker.SelectedDate, Subject, (ScienceJournal.Categories)Enum.Parse(typeof(ScienceJournal.Categories), refinedCategory));
+                }
+                data.AddItem(item);
+                editActionCompleted(this, null);
             }
-            else if (itemType == typeof(ChildrenBook))
+        }
+
+        private bool validateMandatoryInputs()
+        {
+            if (nameField.Text.Length == 0)
             {
-                item = new ChildrenBook(newItemParams, (DateTime)dateFromPicker.SelectedDate, (ChildrenBook.Categories)Enum.Parse(typeof(ChildrenBook.Categories), refinedCategory), IsBestseller);
+                MessageBox.Show("Name cannot be left blank, please enter a name");
+                return false;
             }
-            else if (itemType == typeof(StudyBook))
+            else if (authorInp.Text.Length == 0)
             {
-                item = new StudyBook(newItemParams, (DateTime)dateFromPicker.SelectedDate, (StudyBook.Categories)Enum.Parse(typeof(StudyBook.Categories), refinedCategory), IsBestseller);
+                MessageBox.Show("Author cannot be left blank, please enter the item's author's name!");
+                return false;
             }
-            else if (itemType == typeof(RegularJournal))
+            else if (dateFromPicker.SelectedDate == null)
             {
-                item = new RegularJournal(newItemParams, (DateTime)dateFromPicker.SelectedDate, Subject, (RegularJournal.Categories)Enum.Parse(typeof(RegularJournal.Categories), refinedCategory));
+                MessageBox.Show("Please choose the item's publication date!");
+                return false;
             }
-            else if (itemType == typeof(ScienceJournal))
+            else if (SelectedType == null)
             {
-                item = new ScienceJournal(newItemParams, (DateTime)dateFromPicker.SelectedDate, Subject, (ScienceJournal.Categories)Enum.Parse(typeof(ScienceJournal.Categories), refinedCategory));
+                MessageBox.Show("Please choose the item's type!");
+                return false;
             }
-            data.AddItem(item);
+            else if (SelectedSubtype == null)
+            {
+                MessageBox.Show("Please select the item's subtype!");
+                return false;
+            }
+            else if (SelectedCategory == null)
+            {
+                MessageBox.Show("Please select the item's category!");
+                return false;
+            }
+            return true;
         }
 
         private void editExistingItem()
         {
-            int editionNumber;
-            if (int.TryParse(itemEditionInp.Text, out editionNumber))
+            if (validateMandatoryInputs())
             {
-                editedItem.Edition = editionNumber;
+                int editionNumber;
+                if (int.TryParse(itemEditionInp.Text, out editionNumber))
+                {
+                    editedItem.Edition = editionNumber;
+                }
+                else
+                {
+                    throw new InvalidCastException("Edition must be a number only!");
+                }
+                string refinedCategory = SelectedCategory.Replace("&", string.Empty);
+                refinedCategory = refinedCategory.Replace(" ", string.Empty);
+                editedItem.Name = nameField.Text;
+                editedItem.ISBN = new ISBN(serialNumInp.Text);
+                editedItem.Location = locBox.Text;
+                editedItem.PrintDate = (DateTime)dateFromPicker.SelectedDate;
+                editedItem.Author = authorInp.Text;
+                if (editedItem.GetType().IsSubclassOf(typeof(Book)))
+                {
+                    if (editedItem is RegularBook)
+                    {
+                        RegularBook book = editedItem as RegularBook;
+                        book.Category = (RegularBook.Categories)Enum.Parse(typeof(RegularBook.Categories), refinedCategory);
+                    }
+                    else if (editedItem is ChildrenBook)
+                    {
+                        ChildrenBook book = editedItem as ChildrenBook;
+                        book.Category = (ChildrenBook.Categories)Enum.Parse(typeof(ChildrenBook.Categories), refinedCategory);
+                    }
+                    else if (editedItem is StudyBook)
+                    {
+                        StudyBook book = editedItem as StudyBook;
+                        book.Category = (StudyBook.Categories)Enum.Parse(typeof(StudyBook.Categories), refinedCategory);
+                    }
+                    ((Book)editedItem).IsBestseller = IsBestseller;
+                }
+                else if (editedItem.GetType().IsSubclassOf(typeof(Journal)))
+                {
+                    if (editedItem is RegularJournal)
+                    {
+                        RegularJournal journal = editedItem as RegularJournal;
+                        journal.Category = (RegularJournal.Categories)Enum.Parse(typeof(RegularJournal.Categories), refinedCategory);
+                    }
+                    else if (editedItem is ScienceJournal)
+                    {
+                        ScienceJournal journal = editedItem as ScienceJournal;
+                        journal.Category = (ScienceJournal.Categories)Enum.Parse(typeof(ScienceJournal.Categories), refinedCategory);
+                    }
+                    ((Journal)editedItem).Subject = Subject;
+                }
+                editActionCompleted(this, null);
             }
-            else
-            {
-                throw new InvalidCastException("Edition must be a number only!");
-            }
-            string refinedCategory = SelectedCategory.Replace("&", string.Empty);
-            refinedCategory = refinedCategory.Replace(" ", string.Empty);
-            editedItem.Name = nameField.Text;
-            editedItem.ISBN = new ISBN(serialNumInp.Text);
-            editedItem.Location = locBox.Text;
-            editedItem.PrintDate = (DateTime)dateFromPicker.SelectedDate;
-            editedItem.Author = authorInp.Text;
-            if (editedItem.GetType().IsSubclassOf(typeof(Book)))
-            {
-                if (editedItem is RegularBook)
-                {
-                    RegularBook book = editedItem as RegularBook;
-                    book.Category = (RegularBook.Categories)Enum.Parse(typeof(RegularBook.Categories), refinedCategory);
-                }
-                else if (editedItem is ChildrenBook)
-                {
-                    ChildrenBook book = editedItem as ChildrenBook;
-                    book.Category = (ChildrenBook.Categories)Enum.Parse(typeof(ChildrenBook.Categories), refinedCategory);
-                }
-                else if (editedItem is StudyBook)
-                {
-                    StudyBook book = editedItem as StudyBook;
-                    book.Category = (StudyBook.Categories)Enum.Parse(typeof(StudyBook.Categories), refinedCategory);
-                }
-                ((Book)editedItem).IsBestseller = IsBestseller;
-            }
-            else if (editedItem.GetType().IsSubclassOf(typeof(Journal)))
-            {
-                if (editedItem is RegularJournal)
-                {
-                    RegularJournal journal = editedItem as RegularJournal;
-                    journal.Category = (RegularJournal.Categories)Enum.Parse(typeof(RegularJournal.Categories), refinedCategory);
-                }
-                else if (editedItem is ScienceJournal)
-                {
-                    ScienceJournal journal = editedItem as ScienceJournal;
-                    journal.Category = (ScienceJournal.Categories)Enum.Parse(typeof(ScienceJournal.Categories), refinedCategory);
-                }
-                ((Journal)editedItem).Subject = Subject;
-            }
+        }
+
+        private void addButton_Click(object sender, RoutedEventArgs e)
+        {
+            createNewItem();
+        }
+
+        private void cancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            editActionCompleted(this, null);
         }
     }
 }

@@ -6,14 +6,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Width="978" Height="600">
     <Grid>
-        <Button Content="Search" Height="25" HorizontalAlignment="Right" Margin="0,9,224,0" Name="searchButton" VerticalAlignment="Top" Width="100" FontSize="16" Click="SearchButton_Click" />
-        <TextBox Height="25" HorizontalAlignment="Left" Margin="252,10,0,0" Name="itemNameInp" VerticalAlignment="Top" Width="396" />
+        <Button Content="Search" Height="25" HorizontalAlignment="Right" Margin="0,8,108,0" Name="searchButton" VerticalAlignment="Top" Width="100" FontSize="16" Click="SearchButton_Click" />
+        <TextBox Height="25" HorizontalAlignment="Left" Margin="252,10,0,0" Name="itemNameInp" VerticalAlignment="Top" Width="512" />
         <TextBlock Height="25" HorizontalAlignment="Left" Margin="161,12,0,0" Name="itemNameBlock" Text="Item Name" VerticalAlignment="Top" Width="85" FontSize="16" TextAlignment="Center" />
         <Expander Header="More Search Options" Height="23" HorizontalAlignment="Left" Margin="12,12,0,0" Name="optionsExpander" VerticalAlignment="Top" Width="143" ExpandDirection="Down" Expanded="OptionsExpander_Expanded" Collapsed="OptionsExpander_Collapsed" />
-        <ContentControl Height="547" HorizontalAlignment="Left" Margin="12,41,0,0" Name="expanderContent" VerticalAlignment="Top" Width="954"></ContentControl>
-        <Button Content="Delete Item" Height="25" HorizontalAlignment="Right" Margin="0,8,128,0" Name="removeItemButton" VerticalAlignment="Top" Width="90" Visibility="Hidden" />
-        <Button Content="Borrow Item" Height="25" HorizontalAlignment="Left" Margin="760,8,0,0" Name="borrowItemButton" VerticalAlignment="Top" Visibility="Hidden" Width="90" />
-        <Button Content="Add Item" Height="25" HorizontalAlignment="Left" Margin="856,8,0,0" Name="addItemButton" VerticalAlignment="Top" Visibility="Hidden" Width="90" />
-        <Button Content="Return Item" Height="25" HorizontalAlignment="Left" Margin="856,8,0,0" Name="returnItemButton" VerticalAlignment="Top" Visibility="Hidden" Width="90" />
+        <ContentControl Height="547" HorizontalAlignment="Left" Margin="12,41,0,0" Name="expanderContent" VerticalAlignment="Top" Width="954" />
+        <Button Content="New Item" Height="25" HorizontalAlignment="Right" Margin="0,8,12,0" Name="addItemButton" VerticalAlignment="Top" Visibility="Visible" Width="90" FontSize="16" Click="addItemButton_Click" />
     </Grid>
 </UserControl>

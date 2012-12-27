@@ -17,8 +17,6 @@ namespace BookLibServices
     {
         //private delegate void Notifier(object sender, string message);
         //public event Notifier ErrorOccured;
-
-        private int _copyNumber;
         private int _edition;
         public AbstractItem(Dictionary<ValidItemParams, string> parameters, DateTime printDate)
         {
@@ -32,26 +30,45 @@ namespace BookLibServices
             {
                 this.ISBN = new ISBN();
             }
-            if (int.TryParse(parameters[ValidItemParams.EditionNumber], out _edition))
-            { }
-            else
+            if (parameters.ContainsKey(ValidItemParams.EditionNumber))
             {
-                throw new InvalidParameterException("Invalid edition number! Edition must be a number!");
+                if (int.TryParse(parameters[ValidItemParams.EditionNumber], out _edition))
+                { }
+                else
+                {
+                    throw new InvalidParameterException("Invalid edition number! Edition must be a number!");
+                }
             }
             this.Location = parameters[ValidItemParams.Location];
             this.Author = parameters[ValidItemParams.Author];
         }
 
 
-        public ISBN ISBN { get; set; }
+        public ISBN ISBN 
+        { get; set; }
         public string Name { get;  set; }
         public DateTime PrintDate { get; set; }
         public string Location { get; set; }
         public string Author { get; set; }
-        public int Edition
+        public int CopyNumber { get; set; }
+        public int Edition { get; set; }
+
+        public override bool Equals(object obj)
         {
-            get { return _edition; }
-            set { _edition = value; }
+            if (obj is AbstractItem)
+            {
+                return this.ISBN.Number == ((AbstractItem)obj).ISBN.Number;
+            }
+            else
+            {
+                return this == obj;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            string hashcode = this.ISBN.Number.Replace("-", string.Empty);
+            return int.Parse(hashcode);
         }
     }
 }

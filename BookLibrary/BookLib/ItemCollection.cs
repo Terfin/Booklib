@@ -20,7 +20,22 @@ namespace BookLibDAL
                             { ValidItemParams.Author, "moshe" },
                             { ValidItemParams.EditionNumber, "1" },
                             { ValidItemParams.Location, "D:22"}
-                        }, DateTime.MinValue, ChildrenBook.Categories.HistoricalFiction));
+                        }, DateTime.MinValue, ChildrenBook.Categories.HistoricalFiction, true));
+            this.Add(new ChildrenBook(new Dictionary<ValidItemParams, string>()
+                        {
+                            { ValidItemParams.Name, "foobar" },
+                            { ValidItemParams.Author, "moshe" },
+                            { ValidItemParams.EditionNumber, "1" },
+                            { ValidItemParams.Location, "D:22"},
+                            { ValidItemParams.ISBN, this[0].ISBN.Number }
+                        }, DateTime.MinValue, ChildrenBook.Categories.HistoricalFiction, true));
+            this.Add(new RegularJournal(new Dictionary<ValidItemParams, string>()
+                        {
+                            {ValidItemParams.Name, "fooptard"},
+                            {ValidItemParams.Author, "goopar"},
+                            {ValidItemParams.EditionNumber, "2"},
+                            {ValidItemParams.Location, "A:35"}
+                        }, DateTime.MinValue, "The great cornholio", RegularJournal.Categories.FinanceEconomy));
             ISBN.ISBNRegistrationChanged += ApproveISBNRegistration;
         }
 

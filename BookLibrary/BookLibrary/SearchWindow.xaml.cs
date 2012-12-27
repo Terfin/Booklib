@@ -98,7 +98,18 @@ namespace BookLibrary
                     listOfValuesLists.Add(checkedCategories.Keys.ToList());
                     searchFuncSet.Add(SearchHelper.searchByCategory);
                 }
-                dyndata.Search(listOfValuesLists, searchFuncSet);
+                if (searchFuncSet.Count > 0)
+                {
+                    dyndata.Search(listOfValuesLists, searchFuncSet);
+                }
+                else
+                {
+                    dyndata.Search();
+                }
+            }
+            else
+            {
+                dyndata.Search();
             }
         }
 
@@ -110,18 +121,34 @@ namespace BookLibrary
         public void editDone(object sender, EventArgs e)
         {
             editItemWindow editedItemWindow = (editItemWindow)sender;
-            dyndata.Search(new List<List<string>>()
+            if (editedItemWindow.serialNumInp.Text.Length > 0)
             {
-                new List<string>()
+                dyndata.Search(new List<List<string>>()
                 {
-                    editedItemWindow.serialNumInp.Text
-                }
-            }, new List<DynamicData.SearchFunction>()
+                    new List<string>()
+                    {
+                        editedItemWindow.serialNumInp.Text
+                    }
+                }, new List<DynamicData.SearchFunction>()
+                {
+                    SearchHelper.searchByISBN
+                });
+            }
+            else
             {
-                SearchHelper.searchByISBN
-            });
+                dyndata.Search();
+            }
             optionsExpander.IsExpanded = true;
             optionsExpander.IsExpanded = false;
+            editedItemWindow.editActionCompleted -= editDone;
+        }
+
+        private void addItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            optionsExpander.IsExpanded = false;
+            editItemWindow newItemWindow = new editItemWindow(editItemWindow.editTypes.Add);
+            newItemWindow.editActionCompleted += editDone;
+            expanderContent.Content = newItemWindow;
         }
     }
 }

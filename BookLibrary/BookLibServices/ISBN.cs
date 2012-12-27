@@ -56,6 +56,10 @@ namespace BookLibServices
             string isbnString = "";
             for (int i = 9; i >= 1; i--)
             {
+                if (i % 3 == 0 && i < 9 && i > 0)
+                {
+                    isbnString += "-";
+                }
                 if (i > isbn.Length)
                 {
                     isbnString += "0";
@@ -63,10 +67,6 @@ namespace BookLibServices
                 else
                 {
                     isbnString += isbn[i - 1];
-                }
-                if (i % 3 == 0 && i < 9)
-                {
-                    isbnString += "-";
                 }
             }
             return isbnString;
