@@ -27,11 +27,12 @@ namespace BookLibrary
         private Dictionary<string, bool> checkedTypes = new Dictionary<string, bool>();
         private Dictionary<string, bool> checkedSubtypes = new Dictionary<string, bool>();
         private Dictionary<string, bool> checkedCategories = new Dictionary<string, bool>();
+        private List<CheckBox> categoryBoxes = new List<CheckBox>();
         private ObservableCollection<string> subtypes = new ObservableCollection<string>();
-        private ObservableCollection<string> categories1 = new ObservableCollection<string>();
-        private ObservableCollection<string> categories2 = new ObservableCollection<string>();
-        private ObservableCollection<string> categories3 = new ObservableCollection<string>();
-        private ObservableCollection<string> categories4 = new ObservableCollection<string>();
+        private ObservableCollection<CheckBox> categories1 = new ObservableCollection<CheckBox>();
+        private ObservableCollection<CheckBox> categories2 = new ObservableCollection<CheckBox>();
+        private ObservableCollection<CheckBox> categories3 = new ObservableCollection<CheckBox>();
+        private ObservableCollection<CheckBox> categories4 = new ObservableCollection<CheckBox>();
 
         private string _isbn;
         private string _author;
@@ -53,6 +54,7 @@ namespace BookLibrary
             dateFromPicker.DataContext = this;
             dateToPicker.DataContext = this;
             itemEditionInp.DataContext = this;
+
         }
 
         public bool IsCheckBoxChecked
@@ -78,7 +80,15 @@ namespace BookLibrary
 
         private void type_Unchecked(object sender, RoutedEventArgs e)
         {
-            checkedTypes[((CheckBox)sender).Content.ToString()] = false;
+            string type = ((CheckBox)sender).Content.ToString();
+            checkedTypes[type] = false;
+            foreach (string subtype in utilities.getSubTypes(type))
+            {
+                if (CheckedSubtypes.ContainsKey(subtype))
+                {
+                    CheckedSubtypes[subtype] = false;
+                }
+            }
             updateSubtypes();
         }
 
@@ -94,17 +104,21 @@ namespace BookLibrary
             {
                 parames.Add("book");
             }
-            foreach (string subt in utilities.getSubTypes(parames))
+            if (parames.Count > 0)
             {
-                subtypes.Add(subt);
-            }
-            foreach (string box in itemSubTypeList.Items)
-            {
-                if (checkedSubtypes.ContainsKey(box) && checkedSubtypes[box])
+                foreach (string subt in utilities.getSubTypes(parames))
                 {
-                    itemSubTypeList.SelectedItems.Add(box);
+                    subtypes.Add(subt);
+                }
+                foreach (string box in itemSubTypeList.Items)
+                {
+                    if (checkedSubtypes.ContainsKey(box) && checkedSubtypes[box])
+                    {
+                        itemSubTypeList.SelectedItems.Add(box);
+                    }
                 }
             }
+            updateCategories();
         }
 
         private void subType_Checked(object sender, RoutedEventArgs e)
@@ -115,8 +129,25 @@ namespace BookLibrary
 
         private void subType_Unchecked(object sender, RoutedEventArgs e)
         {
-            checkedSubtypes[((CheckBox)sender).Content.ToString()] = false;
+            string subType = ((CheckBox)sender).Content.ToString();
+            
+            if (subType.ToLower() != "{disconnecteditem}")
+            {
+                ValidateCategories(subType);
+            }
             updateCategories();
+        }
+        
+        private void ValidateCategories(string subType)
+        {
+            checkedSubtypes[subType] = false;
+            foreach (string item in utilities.getCategories(subType))
+            {
+                if (checkedCategories.ContainsKey(item))
+                {
+                    CheckedCategories[item] = false;
+                }
+            }
         }
 
 
@@ -125,6 +156,7 @@ namespace BookLibrary
             categories1.Clear();
             categories2.Clear();
             categories3.Clear();
+            categories4.Clear();
             List<string> parames = new List<string>();
             foreach (string box in checkedSubtypes.Keys)
             {
@@ -135,21 +167,30 @@ namespace BookLibrary
             }
             foreach (string category in utilities.getCategories(parames))
             {
+                CheckBox box = new CheckBox();
+                box.Content = category;
+                box.FontSize = 16.0;
+                box.Checked += category_Checked;
+                box.Unchecked += category_Unchecked;
+                if (CheckedCategories.ContainsKey(category))
+                {
+                    box.IsChecked = CheckedCategories[category];
+                }
                 if (categories1.Count < 8)
                 {
-                    categories1.Add(category);
+                    categories1.Add(box);
                 }
                 else if (categories1.Count >= 8 && categories2.Count < 8)
                 {
-                    categories2.Add(category);
+                    categories2.Add(box);
                 }
                 else if (categories2.Count >= 8 && categories3.Count < 8)
                 {
-                    categories3.Add(category);
+                    categories3.Add(box);
                 }
                 else if (categories3.Count >= 8 && categories4.Count < 8)
                 {
-                    categories4.Add(category);
+                    categories4.Add(box);
                 }
             }
         }

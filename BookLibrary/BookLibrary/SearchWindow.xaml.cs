@@ -21,6 +21,13 @@ namespace BookLibrary
     /// </summary>
     public partial class SearchWindow : UserControl
     {
+        /*
+         * This is the UI that provides most of the user interaction, you can search for items using the name or provide more information
+         * using the "more options" expander and inside this user control there is a content control that switches between several user controls
+         * 1. Search types window, triggered by expanding the expander.
+         * 2. Search results window, triggered by collapsing the expander or by clicking the search button.
+         * 3. Edit window which is triggered once you hit the edit button on any of the search results or push the new item button.
+         */
         SearchTypeWindow stype;
         SearchResultsWindow sresults;
         DynamicData dyndata;
@@ -37,25 +44,31 @@ namespace BookLibrary
             dyndata.onSearchComplete += searchComplete;
         }
 
-        void sresults_EditActionInvoked(object sender, EventArgs e)
+        void sresults_EditActionInvoked(object sender, EventArgs e) // Triggered once an edit button is pushed in results window.
         {
             editItemWindow editWindow = new editItemWindow(editItemWindow.editTypes.Edit, (AbstractItem)sender);
             editWindow.editActionCompleted += editDone;
             expanderContent.Content = editWindow;
         }
 
-        private void OptionsExpander_Expanded(object sender, RoutedEventArgs e)
+        private void OptionsExpander_Expanded(object sender, RoutedEventArgs e) // changes the contentcontrol (CC) to show the search types user control (UC).
         {
             expanderContent.Content = stype;
         }
 
-        private void OptionsExpander_Collapsed(object sender, RoutedEventArgs e)
+        private void OptionsExpander_Collapsed(object sender, RoutedEventArgs e) // changes the CC to show the search results UC.
         {
             expanderContent.Content = sresults;
         }
 
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        private void SearchButton_Click(object sender, RoutedEventArgs e) 
         {
+            /*
+             * Commits a search, it goes over all the filled inputs in both this UC and in search types UC
+             * creates a list of lists of inputs, creates a list of functions that can be used in the SearchFunction delegate
+             * then passes both of the lists to the search method in the logics tier.
+             * If no fields are filled up, it simply invokes a method in logics tier that all it does is return the entire collection.
+             */
             List<DynamicData.SearchFunction> searchFuncSet = new List<DynamicData.SearchFunction>();
             List<List<string>> listOfValuesLists = new List<List<string>>();
             if (itemNameInp.Text.Length > 0)
@@ -112,14 +125,10 @@ namespace BookLibrary
                     listOfValuesLists.Add(checkedCategories.Keys.ToList());
                     searchFuncSet.Add(SearchHelper.searchByCategory);
                 }
-                if (searchFuncSet.Count > 0)
-                {
-                    dyndata.Search(listOfValuesLists, searchFuncSet);
-                }
-                else
-                {
-                    dyndata.Search();
-                }
+            }
+            if (searchFuncSet.Count > 0)
+            {
+                dyndata.Search(listOfValuesLists, searchFuncSet);
             }
             else
             {

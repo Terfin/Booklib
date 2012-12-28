@@ -31,34 +31,10 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ListBox>
-        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="112,323,0,0" Name="itemCategoriesList1" SelectionMode="Multiple" VerticalAlignment="Top" Width="165" Background="Transparent">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox Content="{Binding}" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Margin="3" FontSize="14" Checked="category_Checked" Unchecked="category_Unchecked" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="283,323,0,0" Name="itemCategoriesList2" SelectionMode="Multiple" VerticalAlignment="Top" Width="165" Background="Transparent">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox Content="{Binding}" FontSize="14" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Margin="3" Checked="category_Checked" Unchecked="category_Unchecked" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="454,323,0,0" Name="itemCategoriesList3" SelectionMode="Multiple" VerticalAlignment="Top" Width="168" Background="Transparent">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox Content="{Binding}" FontSize="14" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Margin="3" Checked="category_Checked" Unchecked="category_Unchecked" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="628,323,0,0" Name="itemCategoriesList4" SelectionMode="Multiple" VerticalAlignment="Top" Width="161" Background="Transparent">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox Content="{Binding}" FontSize="14" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Margin="3" Checked="category_Checked" Unchecked="category_Unchecked" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="112,323,0,0" Name="itemCategoriesList1" SelectionMode="Multiple" VerticalAlignment="Top" Width="165" Background="Transparent" />
+        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="283,323,0,0" Name="itemCategoriesList2" SelectionMode="Multiple" VerticalAlignment="Top" Width="165" Background="Transparent" />
+        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="454,323,0,0" Name="itemCategoriesList3" SelectionMode="Multiple" VerticalAlignment="Top" Width="168" Background="Transparent" />
+        <ListBox BorderThickness="0" Height="212" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="628,323,0,0" Name="itemCategoriesList4" SelectionMode="Multiple" VerticalAlignment="Top" Width="161" Background="Transparent" />
         <TextBlock FontSize="16" Height="25" HorizontalAlignment="Left" Margin="288,23,0,0" Name="itemEditionBlock" Text="Edition" VerticalAlignment="Top" Width="55" />
         <TextBox Height="25" HorizontalAlignment="Left" Margin="349,23,0,0" Name="itemEditionInp" Text="{Binding Edition, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="33" MaxLength="2" />
     </Grid>

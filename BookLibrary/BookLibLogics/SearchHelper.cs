@@ -93,7 +93,7 @@ namespace BookLibLogics
              */
             origin = origin == null || origin.Count == 0 ? collection : origin;
             string fixedCategory = categoryName.Replace("&", string.Empty);
-            fixedCategory = categoryName.Replace(" ", string.Empty);
+            fixedCategory = fixedCategory.Replace(" ", string.Empty);
             return origin.FindAll(x =>
             {
                 if (x.GetType() == typeof(ChildrenBook))

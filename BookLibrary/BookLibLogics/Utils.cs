@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using BookLibServices;
+using System.Windows.Controls;
 
 namespace BookLibrary
 {
@@ -106,7 +107,7 @@ namespace BookLibrary
             }
         }
 
-        public List<string> getCategories(List<string> subTypes) //Returns a list of categories.... that's it.
+        public List<string> getCategories(List<string> subTypes) //Returns a list of categories for a given list of subtypes.... that's it.
         {
             List<string> categories = new List<string>();
             foreach (string type in subTypes)
@@ -114,6 +115,11 @@ namespace BookLibrary
                 categories.AddRange(categoryDict[type].Where(x => !categories.Contains(x)));
             }
             return categories;
+        }
+
+        public List<string> getCategories(string subType)
+        {
+            return categoryDict[subType.ToLower()];
         }
 
         public List<string> getSubTypes(List<string> types) //Returns a list of types...
@@ -128,6 +134,11 @@ namespace BookLibrary
                 matchSubtypes.AddRange(bookTypes);
             }
             return matchSubtypes;
+        }
+
+        public List<string> getSubTypes(string type)
+        {
+            return getSubTypes(new List<string>() { type.ToLower() });
         }
     }
 }

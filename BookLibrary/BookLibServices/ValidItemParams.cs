@@ -5,6 +5,9 @@ using System.Text;
 
 namespace BookLibServices
 {
+    /*
+     * This is a list of valid item params that can be used to instantiate an AbstractItem based class.
+     */
     public enum ValidItemParams
     {
         Name,

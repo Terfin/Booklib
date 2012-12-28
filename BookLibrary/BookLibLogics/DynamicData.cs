@@ -105,7 +105,7 @@ namespace BookLibLogics
                 List<AbstractItem> funcResults = new List<AbstractItem>();
                 foreach (string value in listOfSearchValues[i])
                 {
-                    List<AbstractItem> lastSearchResults = results != null ? results.ToList() : null;
+                    List<AbstractItem> lastSearchResults = results != null ? results.ToList() : new List<AbstractItem>();
                     funcResults.AddRange(searchFunctions[i](value, lastSearchResults));
                 }
                 results = new HashSet<AbstractItem>();

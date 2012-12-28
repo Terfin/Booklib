@@ -23,8 +23,14 @@ namespace BookLibrary
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+   
     public partial class MainWindow : Window
     {
+        /* Nothing important here, except for setting the culture in order to get a normal date format.
+         * Basically, if I realized how to implement MVVM (or MVC) at a early stage and not at the end of the project
+         * I would create all the user control instances here and make this class as a master controller.
+         * Unfortunately, I didn't do it and remaking the entire project will take too long.
+         */
         SearchWindow swin = new SearchWindow();
         public MainWindow()
         {
