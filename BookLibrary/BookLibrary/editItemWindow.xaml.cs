@@ -243,6 +243,10 @@ namespace BookLibrary
             {
                 MessageBox.Show(error.Message);
             }
+            catch (InvalidSerialNumberException error)
+            {
+                MessageBox.Show(error.Message);
+            }
         }
 
         private void createNewItem()
@@ -258,6 +262,14 @@ namespace BookLibrary
                 if (serialNumInp.Text.Length > 0)
                 {
                     newItemParams[ValidItemParams.ISBN] = serialNumInp.Text;
+                    if (serialNumInp.Text != editedItem.ISBN.Number)
+                    {
+                        data.removeISBN(editedItem.ISBN);
+                        if (!data.validateISBN(new ISBN(serialNumInp.Text)))
+                        {
+                            throw new InvalidSerialNumberException("This ISBN is already registered to another item! Try something else!");
+                        }
+                    }
                 }
                 if (itemEditionInp.Text.Length > 0)
                 {
@@ -344,7 +356,20 @@ namespace BookLibrary
                 string refinedCategory = SelectedCategory.Replace("&", string.Empty);
                 refinedCategory = refinedCategory.Replace(" ", string.Empty);
                 editedItem.Name = nameField.Text;
-                editedItem.ISBN = new ISBN(serialNumInp.Text);
+                if (serialNumInp.Text != editedItem.ISBN.Number)
+                {
+                    ISBN newisbn = new ISBN(serialNumInp.Text);
+                    if (data.validateISBN(newisbn))
+                    {
+                        data.removeISBN(editedItem.ISBN);
+                        editedItem.ISBN = newisbn;
+                        data.addISBN(newisbn);
+                    }
+                    else
+                    {
+                        throw new InvalidSerialNumberException("This ISBN is already registered to another item! Try something else!");
+                    }
+                }
                 editedItem.Location = locBox.Text;
                 editedItem.PrintDate = (DateTime)dateFromPicker.SelectedDate;
                 editedItem.Author = authorInp.Text;

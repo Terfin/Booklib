@@ -16,7 +16,11 @@ namespace BookLibServices
 
     public abstract class AbstractItem
     {
+        Random rnd = new Random();
+        private static List<int> CreatedItemsIds = new List<int>();
         private int _edition;
+        private int id;
+
         public AbstractItem(Dictionary<ValidItemParams, string> parameters, DateTime printDate)
         {
             this.Name = parameters[ValidItemParams.Name];
@@ -46,6 +50,13 @@ namespace BookLibServices
             {
                 Edition = 1;
             }
+            int id = rnd.Next(int.MaxValue);
+            while (CreatedItemsIds.Contains(id))
+            {
+                id = rnd.Next(int.MaxValue);
+            }
+            this.id = id;
+            CreatedItemsIds.Add(id);
         }
 
 
@@ -72,8 +83,7 @@ namespace BookLibServices
 
         public override int GetHashCode()
         {
-            string hashcode = this.ISBN.Number.Replace("-", string.Empty);
-            return int.Parse(hashcode);
+            return id;
         }
     }
 }

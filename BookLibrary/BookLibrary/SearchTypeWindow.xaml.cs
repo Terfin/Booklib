@@ -54,7 +54,6 @@ namespace BookLibrary
             dateFromPicker.DataContext = this;
             dateToPicker.DataContext = this;
             itemEditionInp.DataContext = this;
-
         }
 
         public bool IsCheckBoxChecked

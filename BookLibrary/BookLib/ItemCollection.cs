@@ -11,32 +11,10 @@ namespace BookLibDAL
     public class ItemCollection : List<AbstractItem>
     {
         private static ItemCollection instance;
-        private static List<ISBN> RegisteredISBNs = new List<ISBN>();
+        private static List<ISBN> registeredISBNs = new List<ISBN>();
         private static Dictionary<string, List<int>> registeredItemCopies = new Dictionary<string, List<int>>();
         private ItemCollection()
         {
-            this.Add(new ChildrenBook(new Dictionary<ValidItemParams, string>()
-                        {
-                            { ValidItemParams.Name, "foobar" },
-                            { ValidItemParams.Author, "moshe" },
-                            { ValidItemParams.EditionNumber, "1" },
-                            { ValidItemParams.Location, "D:22"}
-                        }, DateTime.MinValue, ChildrenBook.Categories.HistoricalFiction, true));
-            this.Add(new ChildrenBook(new Dictionary<ValidItemParams, string>()
-                        {
-                            { ValidItemParams.Name, "foobar" },
-                            { ValidItemParams.Author, "moshe" },
-                            { ValidItemParams.EditionNumber, "1" },
-                            { ValidItemParams.Location, "D:22"},
-                            { ValidItemParams.ISBN, this[0].ISBN.Number }
-                        }, DateTime.MinValue, ChildrenBook.Categories.HistoricalFiction, true));
-            this.Add(new RegularJournal(new Dictionary<ValidItemParams, string>()
-                        {
-                            {ValidItemParams.Name, "fooptard"},
-                            {ValidItemParams.Author, "goopar"},
-                            {ValidItemParams.EditionNumber, "2"},
-                            {ValidItemParams.Location, "A:35"}
-                        }, DateTime.MinValue, "The great cornholio", RegularJournal.Categories.FinanceEconomy));
         }
 
         public static ItemCollection Instance
@@ -90,19 +68,12 @@ namespace BookLibDAL
             }
         }
 
-        public bool ApproveISBNRegistration(ISBN serial)
+        public static List<ISBN> RegisteredISBNList
         {
-            if (RegisteredISBNs.Contains(serial))
+            get
             {
-                return false;
-                //throw new InvalidSerialNumberException("Serial number already exists! Make sure you've typed the correct number!");
-            }
-            else
-            {
-                RegisteredISBNs.Add(serial);
-                return true;
+                return registeredISBNs;
             }
         }
-
     }
 }

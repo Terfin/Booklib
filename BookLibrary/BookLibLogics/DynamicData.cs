@@ -143,8 +143,13 @@ namespace BookLibLogics
 
         public void AddItem(AbstractItem item) // Add item to the collection. Both new item and an existing item.
         {
-            if (!coll.Contains(item))
+            if (!coll.Contains(item) || coll[item.ISBN][0].GetHashCode() != item.GetHashCode())
             {
+                while (!validateISBN(item.ISBN))
+                {
+                    item.ISBN = new ISBN();
+                }
+                ItemCollection.RegisteredISBNList.Add(item.ISBN);
                 coll.Add(item);
                 coll.Add(item);
             }
@@ -153,6 +158,28 @@ namespace BookLibLogics
                 coll.Add(item);
             }
             Search(item);
+        }
+
+        public bool validateISBN(ISBN isbn) // validates that the ISBN doesn't exist already.
+        {
+            if (ItemCollection.RegisteredISBNList.Contains(isbn))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public void addISBN(ISBN isbn) // Adds an isbn to the list.
+        {
+            ItemCollection.RegisteredISBNList.Add(isbn);
+        }
+
+        public void removeISBN(ISBN isbn) // Removes an ISBN from the list.
+        {
+            ItemCollection.RegisteredISBNList.Remove(isbn);
         }
     }
 }
